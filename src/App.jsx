@@ -16,7 +16,7 @@ function Boot() {
     try { const seen = sessionStorage.getItem('boot'); sessionStorage.setItem('boot', 1); return !seen && !matchMedia('(prefers-reduced-motion: reduce)').matches; } catch { return false; }
   });
   const [step, setStep] = useState(0);
-  const lines = ['$ systemctl start portfolio.service', '→ Cargando módulos... [Python, Flask, React, TypeScript]', '→ Conectando con piero2809... OK', '→ Listo.'];
+  const lines = ['$ systemctl start portfolio.service', '→ Cargando módulos... [Python, Flask, React, TypeScript]', '→ Conectando con pierooof... OK', '→ Listo.'];
   useEffect(() => {
     if (!show) return;
     const ids = lines.map((_, i) => setTimeout(() => setStep(i + 1), 300 + i * 450));

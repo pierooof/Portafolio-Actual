@@ -2,7 +2,7 @@ const D = 'https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/icons/';
 // Cada tecnología: nombre, ruta devicon (o null), invertir color
 const t = (name, d = null, invert = false) => ({ name, icon: d && `${D}${d}.svg`, invert });
 
-export const CV = 'https://piero2809.github.io/CV-Html/?origen=portafolio';
+export const CV = 'https://pierooof.github.io/CV-Html/?origen=portafolio';
 
 export const links = [
   { id: 'sobre-mi', label: 'Sobre mí' },
@@ -13,7 +13,7 @@ export const links = [
 ];
 
 export const socials = [
-  { key: 'github', label: 'GitHub', href: 'https://github.com/piero2809' },
+  { key: 'github', label: 'GitHub', href: 'https://github.com/pierooof' },
   { key: 'linkedin', label: 'LinkedIn', href: 'https://www.linkedin.com/in/piero-funes-larios-44360a166' },
   { key: 'email', label: 'Email', href: 'mailto:pierofl2005@gmail.com' },
 ];
@@ -43,7 +43,7 @@ export const projects = [
     text: 'Plataforma para detectar el síndrome de burnout digitalizando el test BAT-12, con métricas, gráficos de resultados y consejos generados con IA.',
     bullets: ['Modelo multitenant con roles (RR. HH., empleado, administrador) y un panel por rol.', 'Backend en Flask con rutas modulares y MySQL.'],
     tags: ['Python', 'Flask', 'MySQL', 'IA'],
-    demo: 'https://resilio-production.up.railway.app/', code: 'https://github.com/piero2809/Resilio',
+    demo: 'https://resilio-production.up.railway.app/', code: 'https://github.com/pierooof/Resilio',
   },
   {
     title: 'RetroPlay', img: 'Retroplay.png', alt: 'Captura de Retroplay', pill: 'E-commerce',
