@@ -22,7 +22,7 @@ export const stack = [
   { group: 'Frontend', items: [t('HTML5', 'html5/html5-original'), t('CSS3', 'css3/css3-original'), t('JavaScript', 'javascript/javascript-original'), t('TypeScript', 'typescript/typescript-original'), t('React', 'react/react-original'), t('Tailwind CSS', 'tailwindcss/tailwindcss-original'), t('Bootstrap', 'bootstrap/bootstrap-original')] },
   { group: 'Backend', items: [t('Python', 'python/python-original'), t('Flask', 'flask/flask-original', true), t('Node.js', 'nodejs/nodejs-original'), t('PHP', 'php/php-original'), t('API REST')] },
   { group: 'Bases de datos', items: [t('MySQL', 'mysql/mysql-original', true), t('MongoDB', 'mongodb/mongodb-original')] },
-  { group: 'Herramientas', items: [t('Git', 'git/git-original'), t('GitHub', 'github/github-original', true), t('Railway'), t('Ubuntu', 'ubuntu/ubuntu-plain', true), t('VS Code', 'vscode/vscode-original')] },
+  { group: 'Herramientas', items: [t('Git', 'git/git-original'), t('GitHub', 'github/github-original', true), t('Docker', 'docker/docker-original'), t('Railway'), t('Ubuntu', 'ubuntu/ubuntu-plain', true), t('VS Code', 'vscode/vscode-original')] },
 ];
 
 export const marquee = ['Python', 'Flask', 'React', 'TypeScript', 'Node.js', 'MySQL', 'MongoDB', 'Tailwind CSS', 'Git', 'Ubuntu', 'VS Code', 'Railway'];
@@ -39,11 +39,25 @@ export const education = [
 
 export const projects = [
   {
-    title: 'Resilio', img: 'Resiliopanel.png', alt: 'Panel de administración de Resilio', pill: 'En producción · Railway',
+    title: 'Resilio', img: 'Resiliopanel.png', alt: 'Panel de administración de Resilio', pill: 'En producción',
     text: 'Plataforma para detectar el síndrome de burnout digitalizando el test BAT-12, con métricas, gráficos de resultados y consejos generados con IA.',
     bullets: ['Modelo multitenant con roles (RR. HH., empleado, administrador) y un panel por rol.', 'Backend en Flask con rutas modulares y MySQL.'],
     tags: ['Python', 'Flask', 'MySQL', 'IA'],
     demo: 'https://resilio.pierooof.dev/', code: 'https://github.com/pierooof/Resilio',
+  },
+  {
+    title: 'Respira', brand: 'respira', pill: 'En producción',
+    text: 'Calidad del aire y polen por barrio de Valencia: mapa de los 19 distritos coloreado por el índice europeo EAQI, ficha con previsión, histórico y avisos por Telegram.',
+    bullets: ['Worker en un proceso aparte (APScheduler) que guarda el histórico diario con datos de Open-Meteo respetando los límites de su API.', 'Usuarios con barrios favoritos y avisos por Telegram; tests con pytest.'],
+    tags: ['Python', 'Flask', 'MySQL', 'Leaflet', 'Telegram'],
+    demo: 'https://respira.pierooof.dev/', code: 'https://github.com/pierooof/Respira',
+  },
+  {
+    title: 'CaféPunto', brand: 'cafe', pill: 'En producción · Docker',
+    text: 'Tarjeta de fidelización digital para cafeterías: el cliente enseña su QR, el barista suma sellos desde el móvil y al llegar a 10 la bebida es gratis.',
+    bullets: ['MVC propio en PHP 8.3 sin framework: router, sesiones, CSRF y límite de intentos de login.', 'Roles de cliente, barista y administrador, escáner de QR, estadísticas y modo claro/oscuro.', 'Tests con PHPUnit y despliegue con Docker en Railway.'],
+    tags: ['PHP', 'MySQL', 'Docker', 'PHPUnit'],
+    demo: 'https://cafe.pierooof.dev/', code: 'https://github.com/pierooof/CafePunto',
   },
   {
     title: 'RetroPlay', img: 'Retroplay.png', alt: 'Captura de Retroplay', pill: 'E-commerce',

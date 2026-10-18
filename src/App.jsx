@@ -21,11 +21,14 @@ function Boot() {
     if (!show) return;
     const ids = lines.map((_, i) => setTimeout(() => setStep(i + 1), 300 + i * 450));
     ids.push(setTimeout(() => setStep(99), 2400), setTimeout(() => setShow(false), 2900));
-    return () => ids.forEach(clearTimeout);
+    // Cualquier tecla omite la intro
+    const skip = () => { setStep(99); ids.push(setTimeout(() => setShow(false), 400)); };
+    addEventListener('keydown', skip);
+    return () => { ids.forEach(clearTimeout); removeEventListener('keydown', skip); };
   }, []);
   if (!show) return null;
   return (
-    <div id="boot" className={step === 99 ? 'done' : 'run'} aria-hidden="true">
+    <div id="boot" className={step === 99 ? 'done' : 'run'} aria-hidden="true" onClick={() => setStep(99)} title="Pulsa para omitir">
       <div className="boot-title">&lt;System.Init/&gt;<span className="cursor">_</span></div>
       <div className="boot-bar"><i /></div>
       <pre className="term">{lines.slice(0, step).join('\n')}</pre>
@@ -69,7 +72,7 @@ const Hero = () => (
         <a href="#contacto" className="btn-primary btn-ghost">Contacto</a>
       </div>
       <ul className="stats">
-        <li><strong>1</strong><span>proyecto en producción</span></li>
+        <li><strong>{projects.filter(p => p.demo).length}</strong><span>proyectos en producción</span></li>
         <li><strong>3</strong><span>meses de prácticas con React + Node</span></li>
         <li><strong>2027</strong><span>fin del ciclo DAW (previsto)</span></li>
       </ul>
@@ -127,14 +130,31 @@ const Journey = () => (
   </section>
 );
 
+// Logo + nombre tal como aparecen en la barra de cada proyecto (iconos de sus repos)
+const logos = {
+  cafe: (
+    <>
+      <svg viewBox="0 0 24 24" width="52" height="52" aria-hidden="true"><path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V9Zm13 1h1.5a2.5 2.5 0 0 1 0 5H17" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /><path d="M8 3.5c-1 1 1 1.8 0 3m4-3c-1 1 1 1.8 0 3" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
+      <span>Café<b>Punto</b></span>
+    </>
+  ),
+  respira: (
+    <>
+      <svg viewBox="0 0 32 32" width="56" height="56" aria-hidden="true"><circle cx="16" cy="16" r="3.2" fill="currentColor" /><circle cx="16" cy="16" r="8.5" fill="none" stroke="currentColor" strokeWidth="1.6" opacity=".7" /><circle cx="16" cy="16" r="13.5" fill="none" stroke="currentColor" strokeWidth="1.6" opacity=".35" /></svg>
+      <span>Respira</span>
+    </>
+  ),
+};
+
 const Projects = () => (
   <section id="proyectos" className="section">
     <Heading>Proyectos</Heading>
     <div className="project-grid">
       {projects.map(p => (
         <article key={p.title} className="project-card spot reveal">
-          <a className="project-media" href={p.demo || p.code} target="_blank" rel="noopener noreferrer" aria-label={`Abrir ${p.title}`}>
-            <img src={p.img} alt={p.alt} width="1024" height="1024" loading="lazy" /><span className="pill">{p.pill}</span>
+          <a className={`project-media ${p.brand ? `brand-media ${p.brand}` : ''}`} href={p.demo || p.code} target="_blank" rel="noopener noreferrer" aria-label={`Abrir ${p.title}`}>
+            {p.brand ? <div className="brand-logo">{logos[p.brand]}</div> : <img src={p.img} alt={p.alt} width="1024" height="1024" loading="lazy" />}
+            <span className="pill">{p.pill}</span>
           </a>
           <div className="project-info">
             <Scramble as="h3" text={p.title} />

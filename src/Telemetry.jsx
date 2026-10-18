@@ -17,14 +17,20 @@ export default function Telemetry() {
     const tick = setInterval(() => setNow(new Date()), 1000);
     // ponytail: CPU simulada con paseo aleatorio; no hay API del navegador para la carga real
     const sim = setInterval(() => setCpu(c => Math.min(95, Math.max(5, c + (Math.random() - 0.5) * 20))), 1500);
+    return () => { clearInterval(tick); clearInterval(sim); };
+  }, []);
+
+  // La latencia solo se mide con el panel abierto: no hace peticiones en segundo plano
+  useEffect(() => {
+    if (!open) return;
     const ping = async () => {
       const s = performance.now();
-      try { await fetch(location.pathname, { method: 'HEAD', cache: 'no-store' }); setLatency(Math.round(performance.now() - s)); } catch { setLatency(null); }
+      try { await fetch(location.pathname, { cache: 'no-store' }); setLatency(Math.round(performance.now() - s)); } catch { setLatency(null); }
     };
     ping();
-    const lat = setInterval(ping, 5000);
-    return () => { clearInterval(tick); clearInterval(sim); clearInterval(lat); };
-  }, []);
+    const lat = setInterval(ping, 10000);
+    return () => clearInterval(lat);
+  }, [open]);
 
   const s = Math.floor((now - t0.current) / 1000);
   const uptime = `${pad(Math.floor(s / 3600))}:${pad(Math.floor(s / 60) % 60)}:${pad(s % 60)}`;
