@@ -2,7 +2,7 @@ const D = 'https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/icons/';
 // Cada tecnología: nombre, ruta devicon (o null), invertir color
 const t = (name, d = null, invert = false) => ({ name, icon: d && `${D}${d}.svg`, invert });
 
-export const CV = 'https://pierooof.github.io/CV-Html/?origen=portafolio';
+export const CV = 'https://cv.pierooof.dev/?origen=portafolio';
 
 export const links = [
   { id: 'sobre-mi', label: 'Sobre mí' },
