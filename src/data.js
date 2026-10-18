@@ -43,7 +43,7 @@ export const projects = [
     text: 'Plataforma para detectar el síndrome de burnout digitalizando el test BAT-12, con métricas, gráficos de resultados y consejos generados con IA.',
     bullets: ['Modelo multitenant con roles (RR. HH., empleado, administrador) y un panel por rol.', 'Backend en Flask con rutas modulares y MySQL.'],
     tags: ['Python', 'Flask', 'MySQL', 'IA'],
-    demo: 'https://resilio-production.up.railway.app/', code: 'https://github.com/pierooof/Resilio',
+    demo: 'https://resilio.pierooof.dev/', code: 'https://github.com/pierooof/Resilio',
   },
   {
     title: 'RetroPlay', img: 'Retroplay.png', alt: 'Captura de Retroplay', pill: 'E-commerce',
