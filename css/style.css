@@ -191,7 +191,7 @@ h2::before { content: "// "; color: var(--primary); }
 .stack { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 1.5rem; }
 .stack-group { padding: 1.5rem; }
 .stack-group h3 { font-family: var(--font-mono); font-size: .8rem; font-weight: 400; color: var(--primary); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 1rem; }
-.chips li { display: inline-flex; align-items: center; gap: .5rem; padding: .4rem .85rem; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); font-size: .85rem; transition: border-color .3s, transform .3s; }
+.chips li { white-space: nowrap; flex-shrink: 0; display: inline-flex; align-items: center; gap: .5rem; padding: .4rem .85rem; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); font-size: .85rem; transition: border-color .3s, transform .3s; }
 .chips li:hover { border-color: var(--primary); transform: translateY(-2px); }
 .chips img.invert { filter: var(--icon-filter); }
 
@@ -243,13 +243,13 @@ footer { display: flex; flex-direction: column; align-items: center; gap: .75rem
 nav { display: flex; justify-content: space-between; align-items: center; gap: 1rem; position: fixed; top: 0; width: 100%; z-index: 1000; padding: .8rem var(--pad-x); background: var(--nav-bg); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
 .logo { display: flex; align-items: center; color: var(--text); text-decoration: none; flex-shrink: 0; }
 .logo svg { display: block; }
-nav ul { display: flex; list-style: none; gap: 1.5rem; align-items: center; margin-left: auto; }
-.navlink { position: relative; text-decoration: none; color: var(--muted); font-family: var(--font-mono); font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; transition: color .3s; }
+nav ul { display: flex; list-style: none; gap: clamp(.9rem, 1.6vw, 1.5rem); align-items: center; margin-left: auto; }
+.navlink { white-space: nowrap; position: relative; text-decoration: none; color: var(--muted); font-family: var(--font-mono); font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; transition: color .3s; }
 .navlink::after { content: ""; position: absolute; left: 0; bottom: -4px; height: 2px; width: 0; background: var(--primary); transition: width .3s; }
 .navlink:hover { color: var(--text); }
 .navlink:hover::after { width: 100%; }
 .menu-socials { display: none; }
-nav .btn-cv { background: var(--brand); color: var(--on-brand); padding: .45rem 1rem; border-radius: 6px; font-family: var(--font-mono); font-size: .8rem; font-weight: 700; text-decoration: none; }
+nav .btn-cv { white-space: nowrap; background: var(--brand); color: var(--on-brand); padding: .45rem 1rem; border-radius: 6px; font-family: var(--font-mono); font-size: .8rem; font-weight: 700; text-decoration: none; }
 nav .btn-cv:hover { background: var(--amber); }
 
 .nav-tools { display: flex; align-items: center; gap: .5rem; }
@@ -263,7 +263,7 @@ nav .btn-cv:hover { background: var(--amber); }
 .hamburger { display: none; background: none; border: 0; cursor: pointer; flex-direction: column; gap: 5px; padding: 4px; }
 .hamburger .bar { display: block; width: 25px; height: 3px; background: var(--text); border-radius: 2px; transition: .3s; }
 
-@media (max-width: 900px) {
+@media (max-width: 1080px) {
     .hamburger { display: flex; }
     nav ul { position: absolute; top: 100%; left: 0; width: 100%; flex-direction: column; gap: 0; margin-left: 0; background: var(--bg); max-height: 0; opacity: 0; overflow: hidden; transition: max-height .4s ease-in-out, opacity .4s; border-top: 1px solid var(--border); }
     nav ul.active { max-height: 560px; opacity: 1; padding: 1.25rem 0 1.5rem; gap: 1.1rem; box-shadow: var(--shadow); }
@@ -280,3 +280,9 @@ nav .btn-cv:hover { background: var(--amber); }
     .hamburger.active .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 }
 @media (max-width: 380px) { .logo svg { height: 24px; width: auto; } }
+
+/* Efecto de letras: el texto real marca el tamaño y el animado se dibuja encima */
+.sc { display: inline-grid; }
+.sc > span { grid-area: 1 / 1; }
+.sc-ghost.hide { visibility: hidden; }
+.sc-live { contain: inline-size; overflow: hidden; white-space: nowrap; }

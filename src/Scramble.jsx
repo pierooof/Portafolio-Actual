@@ -3,7 +3,8 @@ import { useEffect, useRef, useState } from 'react';
 const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#$%&@<>/\\{}[]=+*';
 
 // Al pasar el cursor, las letras se cambian por caracteres aleatorios y se resuelven una a una.
-// En reposo se muestra siempre `text`, así que cambia al instante si cambia el idioma.
+// El texto real (.sc-ghost) fija siempre el tamaño de la caja; el texto animado (.sc-live) se
+// dibuja encima sin aportar ancho, así que el diseño no se mueve durante el efecto.
 export default function Scramble({ text, as: Tag = 'span', ...rest }) {
   const [anim, setAnim] = useState(null);
   const timer = useRef();
@@ -20,5 +21,12 @@ export default function Scramble({ text, as: Tag = 'span', ...rest }) {
     }, 30);
   };
 
-  return <Tag {...rest} onMouseEnter={run} onFocus={run} aria-label={text}>{anim ?? text}</Tag>;
+  return (
+    <Tag {...rest} onMouseEnter={run} onFocus={run} aria-label={text}>
+      <span className="sc">
+        <span className={`sc-ghost${anim === null ? '' : ' hide'}`}>{text}</span>
+        {anim !== null && <span className="sc-live" aria-hidden="true">{anim}</span>}
+      </span>
+    </Tag>
+  );
 }
