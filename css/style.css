@@ -281,8 +281,9 @@ nav .btn-cv:hover { background: var(--amber); }
 }
 @media (max-width: 380px) { .logo svg { height: 24px; width: auto; } }
 
-/* Efecto de letras: el texto real marca el tamaño y el animado se dibuja encima */
-.sc { display: inline-grid; }
-.sc > span { grid-area: 1 / 1; }
+/* Efecto de letras: el texto real marca el tamaño (invisible al animar) y cada letra animada
+   se dibuja encima, centrada en la posición de la original, sin recortes ni cambios de diseño */
+.sc { position: relative; display: inline-grid; }
 .sc-ghost.hide { visibility: hidden; }
-.sc-live { contain: inline-size; overflow: hidden; white-space: nowrap; }
+.sc-live { position: absolute; inset: 0; pointer-events: none; white-space: nowrap; }
+.sc-live > span { position: absolute; text-align: center; }
