@@ -1,0 +1,191 @@
+/* =====================================================================
+   base.css — sistema de diseño reutilizable (marca pierooof.dev)
+   Tokens + reset + tipografía + componentes genéricos + animaciones comunes.
+   No contiene nada específico de las secciones del portafolio.
+
+   Uso en otro proyecto:
+     1. Carga las fuentes 'Inter' y 'JetBrains Mono' (o cambia --font-*).
+     2. Importa este archivo antes que tu CSS.
+     3. Pon data-theme="light" | "dark" en <html> (por defecto, oscuro).
+   ===================================================================== */
+
+/* ---------- 1. TOKENS: COLOR (por tema) ---------- */
+:root,
+:root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #000;
+    --surface: #0a0a0a;
+    --border: #1a1a1a;
+    --text: #e5e5e5;
+    --muted: #a3a3a3;
+    --glass: rgba(255, 255, 255, .03);   /* fondo de tarjetas translúcidas */
+    --primary: #5cb79a;                  /* texto, bordes y acentos */
+    --accent: #7aecc3;
+    --amber: #f0b44c;
+    --brand: #5cb79a;                    /* fondo de botones */
+    --on-brand: #000;                    /* texto sobre --brand */
+    --glow: rgba(92, 183, 154, .15);
+    --spot: rgba(122, 236, 195, .10);    /* foco que sigue al cursor */
+    --bg-glow-a: rgba(92, 183, 154, .14);
+    --bg-glow-b: rgba(122, 236, 195, .06);
+    --dots: rgba(122, 236, 195, .07);    /* retícula de puntos del fondo */
+    --shadow: 0 20px 40px rgba(0, 0, 0, .8);
+    --icon-filter: brightness(0) invert(1);   /* para iconos oscuros sobre fondo oscuro */
+}
+
+:root[data-theme="light"] {
+    color-scheme: light;
+    --bg: #f1f8f5;
+    --surface: #fff;
+    --border: #cfe2da;
+    --text: #12332b;
+    --muted: #4a675e;
+    --glass: rgba(255, 255, 255, .65);
+    --primary: #2b7a62;
+    --accent: #1f6b55;
+    --amber: #d9941a;
+    --brand: #5cb79a;
+    --on-brand: #0e2420;
+    --glow: rgba(43, 122, 98, .16);
+    --spot: rgba(92, 183, 154, .18);
+    --bg-glow-a: rgba(92, 183, 154, .25);
+    --bg-glow-b: rgba(240, 180, 76, .10);
+    --dots: rgba(18, 51, 43, .08);
+    --shadow: 0 20px 40px rgba(18, 51, 43, .18);
+    --icon-filter: none;
+}
+
+/* ---------- 2. TOKENS: ESCALAS (iguales en todos los temas) ---------- */
+:root {
+    /* Tipografía */
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Inter', sans-serif;
+    --lh-body: 1.6;
+    --fs-xs: .75rem;
+    --fs-sm: .85rem;
+    --fs-md: .9rem;
+    --fs-lg: 1.15rem;
+    --fs-h2: clamp(1.8rem, 4vw, 2.5rem);
+
+    /* Espaciado */
+    --space-1: .25rem;
+    --space-2: .5rem;
+    --space-3: 1rem;
+    --space-4: 1.5rem;
+    --space-5: 2rem;
+    --space-6: 3rem;
+    --space-7: 5rem;
+
+    /* Radios */
+    --radius-xs: 2px;
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-pill: 999px;
+
+    /* Movimiento */
+    --dur-fast: .2s;
+    --dur: .3s;
+    --dur-med: .4s;
+    --dur-slow: .6s;
+    --dur-reveal: .7s;
+
+    /* Capas */
+    --z-overlay: 900;
+    --z-nav: 1000;
+    --z-top: 3000;
+    --z-boot: 5000;
+
+    /* Efectos */
+    --blur-sm: 6px;
+    --shadow-glow: 0 0 40px var(--glow);
+    --shadow-btn: 0 0 24px var(--glow), 0 0 0 4px var(--glow);
+
+    /* Estados (semafóricos) */
+    --success: #27c93f;
+    --warning: #ffbd2e;
+    --danger: #ff5f56;
+
+    /* Maquetación */
+    --container: 1100px;
+    --pad-x: max(5%, calc((100% - var(--container)) / 2));
+    --scroll-offset: 80px;   /* alto de la barra fija, para los anclas */
+}
+
+/* ---------- 3. RESET Y BASE ---------- */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+button { font: inherit; color: inherit; }
+
+body {
+    font-family: var(--font-sans);
+    color: var(--text);
+    line-height: var(--lh-body);
+    overflow-x: hidden;
+    background:
+        radial-gradient(ellipse 60% 40% at 15% 0%, var(--bg-glow-a), transparent),
+        radial-gradient(ellipse 50% 40% at 100% 60%, var(--bg-glow-b), transparent),
+        radial-gradient(circle, var(--dots) 1px, transparent 1px) 0 0 / 32px 32px,
+        var(--bg);
+    background-attachment: fixed;
+    transition: background-color var(--dur), color var(--dur);
+}
+
+section[id], header[id] { scroll-margin-top: var(--scroll-offset); }
+
+/* ---------- 4. TIPOGRAFÍA ---------- */
+h2 { font-family: var(--font-mono); font-size: var(--fs-h2); margin-bottom: 2.5rem; }
+h2::before { content: "// "; color: var(--primary); }
+
+/* Etiqueta pequeña en mayúsculas (sobre-título) */
+.eyebrow { font-family: var(--font-mono); color: var(--primary); font-size: var(--fs-sm); font-weight: 400; margin-bottom: var(--space-4); text-transform: uppercase; letter-spacing: 2px; }
+
+/* Texto con degradado marca → ámbar */
+.grad { background: linear-gradient(90deg, var(--primary), var(--amber)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+/* ---------- 5. LAYOUT ---------- */
+.section { padding: var(--space-7) var(--pad-x); }
+
+/* ---------- 6. COMPONENTES ---------- */
+/* Botones */
+.btn-primary { display: inline-block; padding: .85rem 1.7rem; border: 1px solid var(--brand); background: var(--brand); color: var(--on-brand); text-decoration: none; border-radius: var(--radius-md); font-family: var(--font-mono); font-size: var(--fs-md); font-weight: 700; transition: var(--dur); }
+.btn-primary:hover { box-shadow: var(--shadow-btn); transform: translateY(-2px); }
+.btn-ghost { background: transparent; color: var(--text); border-color: var(--border); font-weight: 400; }
+.btn-ghost:hover { border-color: var(--primary); }
+
+/* Tarjeta translúcida con foco que sigue al cursor.
+   Para el foco, actualiza --mx / --my (px) con el ratón desde JS. */
+.spot {
+    --mx: 50%; --my: 50%;
+    position: relative;
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    backdrop-filter: blur(var(--blur-sm));
+}
+.spot::before { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity var(--dur); background: radial-gradient(320px circle at var(--mx) var(--my), var(--spot), transparent 70%); }
+.spot:hover::before { opacity: 1; }
+
+/* Enlace de acción ("Ver más →") */
+.link-arrow { font-family: var(--font-mono); font-size: var(--fs-md); color: var(--primary); text-decoration: none; font-weight: 700; }
+.link-arrow.alt { color: var(--text); font-weight: 400; }
+.link-arrow:hover { text-decoration: underline; }
+
+/* Accesibilidad: saltar al contenido */
+.skip-link { position: absolute; left: -999px; top: 0; background: var(--brand); color: var(--on-brand); padding: var(--space-2) var(--space-3); z-index: var(--z-top); }
+.skip-link:focus { left: 0; }
+
+/* ---------- 7. ANIMACIONES COMUNES ---------- */
+/* Aparición al hacer scroll: añade la clase .in con un IntersectionObserver */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity var(--dur-reveal) ease, transform var(--dur-reveal) ease; }
+.reveal.in { opacity: 1; transform: none; }
+
+@keyframes pulse { 50% { opacity: .4; } }
+@keyframes blink { 50% { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .reveal { opacity: 1; transform: none; transition: none; }
+    * { transition-duration: .01ms !important; animation: none !important; }
+}

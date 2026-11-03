@@ -151,7 +151,7 @@ const Timeline = ({ title, items }) => {
   const { tr } = usePrefs();
   return (
     <div className="reveal">
-      <h3 className="group">{tr(title)}</h3>
+      <h3 className="eyebrow">{tr(title)}</h3>
       <ol className="timeline">
         {items.map(e => (
           <li key={e.org + (e.title.es ?? e.title)} className="spot">
@@ -176,7 +176,7 @@ const Journey = () => {
         <Timeline title={ui.education} items={education} />
       </div>
       <div className="dossier spot reveal">
-        <div><p className="group">{tr(ui.dossier)}</p><p>{tr(ui.dossierText)}</p></div>
+        <div><p className="eyebrow">{tr(ui.dossier)}</p><p>{tr(ui.dossierText)}</p></div>
         <a href={CV} className="btn-primary">{tr(ui.cv)}</a>
       </div>
     </section>
