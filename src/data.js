@@ -54,9 +54,12 @@ export const education = [
   { time: '2023 – 2024', title: { es: 'Psicología', en: 'Psychology' }, org: 'Universidad de Lima' },
 ];
 
+// Captura: archivo en img/projects/ (sin extensión) + texto alternativo bilingüe
+const s = (f, es, en) => ({ src: `projects/${f}.webp`, alt: { es, en } });
+
 export const projects = [
   {
-    title: 'Resilio', img: 'Resiliopanel.png', alt: { es: 'Panel de administración de Resilio', en: 'Resilio admin dashboard' }, pill: { es: 'En producción', en: 'In production' },
+    title: 'Resilio', pill: { es: 'En producción', en: 'In production' },
     text: {
       es: 'Plataforma para detectar el síndrome de burnout digitalizando el test BAT-12, con métricas, gráficos de resultados y consejos generados con IA.',
       en: 'Platform that detects burnout by digitising the BAT-12 test, with metrics, result charts and AI-generated advice.',
@@ -66,10 +69,20 @@ export const projects = [
       { es: 'Backend en Flask con rutas modulares y MySQL.', en: 'Flask backend with modular routes and MySQL.' },
     ],
     tags: ['Python', 'Flask', 'MySQL', { es: 'IA', en: 'AI' }],
+    shots: [
+      s('resilio/dashboard', 'Panel personal con puntuación global, dimensiones y gráfico radar', 'Personal dashboard with overall score, dimensions and radar chart'),
+      s('resilio/test', 'Test BAT-12', 'BAT-12 test'),
+      s('resilio/historial', 'Historial de evaluaciones con consejos de IA', 'Assessment history with AI advice'),
+      s('resilio/admin', 'Panel de administración: resumen del sistema, usuarios recientes y acciones rápidas', 'Admin dashboard: system overview, recent users and quick actions'),
+      s('resilio/informe', 'Informe global con distribución de riesgo, media por dimensión y radar', 'Global report with risk distribution, average per dimension and radar'),
+      s('resilio/login', 'Inicio de sesión', 'Sign in'),
+      s('resilio/register', 'Registro', 'Sign up'),
+      s('resilio/forgot', 'Recuperar contraseña', 'Password recovery'),
+    ],
     demo: 'https://resilio.pierooof.dev/', code: 'https://github.com/pierooof/Resilio',
   },
   {
-    title: 'Respira', brand: 'respira', pill: { es: 'En producción', en: 'In production' },
+    title: 'Respira', pill: { es: 'En producción', en: 'In production' },
     text: {
       es: 'Calidad del aire y polen por barrio de Valencia: mapa de los 19 distritos coloreado por el índice europeo EAQI, ficha con previsión, histórico y avisos por Telegram.',
       en: 'Air quality and pollen by neighbourhood in Valencia: a map of the 19 districts coloured by the European EAQI index, with forecast, history and Telegram alerts.',
@@ -79,10 +92,17 @@ export const projects = [
       { es: 'Usuarios con barrios favoritos y avisos por Telegram; tests con pytest.', en: 'Users with favourite neighbourhoods and Telegram alerts; tested with pytest.' },
     ],
     tags: ['Python', 'Flask', 'MySQL', 'Leaflet', 'Telegram'],
+    shots: [
+      s('respira/mapa', 'Mapa de calidad del aire de Valencia', 'Valencia air quality map'),
+      s('respira/ficha', 'Ficha de barrio: EAQI, contaminantes y polen', 'Neighbourhood card: EAQI, pollutants and pollen'),
+      s('respira/prevision', 'Previsión de 5 días, polen por tipo e histórico', '5-day forecast, pollen by type and history'),
+      s('respira/movil-mapa', 'Mapa en móvil', 'Map on mobile'),
+      s('respira/movil-ficha', 'Ficha en móvil', 'Card on mobile'),
+    ],
     demo: 'https://respira.pierooof.dev/', code: 'https://github.com/pierooof/Respira',
   },
   {
-    title: 'CaféPunto', brand: 'cafe', pill: { es: 'En producción · Docker', en: 'In production · Docker' },
+    title: 'CaféPunto', pill: { es: 'En producción · Docker', en: 'In production · Docker' },
     text: {
       es: 'Tarjeta de fidelización digital para cafeterías: el cliente enseña su QR, el barista suma sellos desde el móvil y al llegar a 10 la bebida es gratis.',
       en: 'Digital loyalty card for coffee shops: the customer shows a QR, the barista adds stamps from their phone, and the 10th drink is free.',
@@ -93,10 +113,25 @@ export const projects = [
       { es: 'Tests con PHPUnit y despliegue con Docker en Railway.', en: 'PHPUnit tests and Docker deployment on Railway.' },
     ],
     tags: ['PHP', 'MySQL', 'Docker', 'PHPUnit'],
+    tall: true, // capturas de móvil: miniaturas más altas
+    shots: [
+      s('cafe/inicio', 'Pantalla de inicio', 'Home screen'),
+      s('cafe/login-claro', 'Login en modo claro', 'Login in light mode'),
+      s('cafe/login-oscuro', 'Login en modo oscuro', 'Login in dark mode'),
+      s('cafe/registro-contrasena-visible', 'Registro con la contraseña visible', 'Sign-up with the password visible'),
+      s('cafe/login-bloqueado', 'Mensaje de demasiados intentos', 'Too many attempts message'),
+      s('cafe/tarjeta-cliente-claro', 'Tarjeta del cliente en modo claro', 'Customer card in light mode'),
+      s('cafe/tarjeta-cliente-oscuro', 'Tarjeta del cliente en modo oscuro', 'Customer card in dark mode'),
+      s('cafe/panel-barista-claro', 'Panel del barista en modo claro', 'Barista dashboard in light mode'),
+      s('cafe/panel-barista-oscuro', 'Panel del barista en modo oscuro', 'Barista dashboard in dark mode'),
+      s('cafe/ficha-cliente', 'Ficha de cliente con botones de sellos', 'Customer profile with stamp buttons'),
+      s('cafe/equipo-claro', 'Pantalla Equipo en modo claro', 'Team screen in light mode'),
+      s('cafe/equipo-oscuro', 'Pantalla Equipo en modo oscuro', 'Team screen in dark mode'),
+    ],
     demo: 'https://cafe.pierooof.dev/', code: 'https://github.com/pierooof/CafePunto',
   },
   {
-    title: 'RetroPlay', img: 'Retroplay.png', alt: { es: 'Captura de Retroplay', en: 'RetroPlay screenshot' }, pill: 'E-commerce',
+    title: 'RetroPlay', pill: 'E-commerce',
     text: {
       es: 'Alquiler de consolas y videojuegos retro: catálogo filtrable, carrito, pedidos y gestión de stock en tiempo real.',
       en: 'Retro console and video game rentals: filterable catalogue, cart, orders and real-time stock management.',
@@ -106,6 +141,7 @@ export const projects = [
       { es: 'Frontend con JavaScript y Bootstrap sobre backend PHP.', en: 'JavaScript and Bootstrap frontend on a PHP backend.' },
     ],
     tags: ['PHP', 'MySQL', 'JavaScript', 'Bootstrap'],
+    shots: [s('retroplay/catalogo', 'Captura de Retroplay', 'RetroPlay screenshot')],
     code: 'https://github.com/samonzfu/Retroplay',
   },
 ];
@@ -148,7 +184,9 @@ export const ui = {
   dossier: { es: 'Dossier profesional', en: 'Professional dossier' },
   dossierText: { es: 'Resumen de mi experiencia, formación y proyectos destacados.', en: 'A summary of my experience, education and featured projects.' },
   projects: { es: 'Proyectos', en: 'Projects' },
-  open: { es: 'Abrir', en: 'Open' },
+  lbClose: { es: 'Cerrar', en: 'Close' },
+  lbPrev: { es: 'Anterior', en: 'Previous' },
+  lbNext: { es: 'Siguiente', en: 'Next' },
   demo: { es: 'Ver demo ↗', en: 'Live demo ↗' },
   code: { es: 'Código →', en: 'Code →' },
   stack: { es: 'Stack', en: 'Stack' },

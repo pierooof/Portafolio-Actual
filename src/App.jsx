@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Scramble from './Scramble';
 import Telemetry from './Telemetry';
 import { PrefsProvider, usePrefs } from './prefs';
@@ -183,47 +183,56 @@ const Journey = () => {
   );
 };
 
-// Logo + nombre tal como aparecen en la barra de cada proyecto (iconos de sus repos)
-const logos = {
-  cafe: (
-    <>
-      <svg viewBox="0 0 24 24" width="52" height="52" aria-hidden="true"><path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V9Zm13 1h1.5a2.5 2.5 0 0 1 0 5H17" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /><path d="M8 3.5c-1 1 1 1.8 0 3m4-3c-1 1 1 1.8 0 3" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
-      <span>Café<b>Punto</b></span>
-    </>
-  ),
-  respira: (
-    <>
-      <svg viewBox="0 0 32 32" width="56" height="56" aria-hidden="true"><circle cx="16" cy="16" r="3.2" fill="currentColor" /><circle cx="16" cy="16" r="8.5" fill="none" stroke="currentColor" strokeWidth="1.6" opacity=".7" /><circle cx="16" cy="16" r="13.5" fill="none" stroke="currentColor" strokeWidth="1.6" opacity=".35" /></svg>
-      <span>Respira</span>
-    </>
-  ),
-};
-
+// Acordeón nativo: <details name="projects"> cierra los demás solos. Las capturas se amplían en un <dialog> nativo.
 const Projects = () => {
   const { tr } = usePrefs();
+  const [lb, setLb] = useState(null); // { shots, i }
+  const dlg = useRef();
+  useEffect(() => { if (lb && !dlg.current.open) dlg.current.showModal(); }, [lb]);
+  const go = n => setLb(l => ({ ...l, i: (l.i + n + l.shots.length) % l.shots.length }));
+  const cur = lb && lb.shots[lb.i];
   return (
     <section id="proyectos" className="section">
       <Heading>{ui.projects}</Heading>
       <div className="project-grid">
         {projects.map(p => (
-          <article key={p.title} className="project-card spot reveal">
-            <a className={`project-media ${p.brand ? `brand-media ${p.brand}` : ''}`} href={p.demo || p.code} target="_blank" rel="noopener noreferrer" aria-label={`${tr(ui.open)} ${p.title}`}>
-              {p.brand ? <div className="brand-logo">{logos[p.brand]}</div> : <img src={p.img} alt={tr(p.alt)} width="1024" height="1024" loading="lazy" />}
-              <span className="pill">{tr(p.pill)}</span>
-            </a>
-            <div className="project-info">
+          <details key={p.title} name="projects" className="project-card spot reveal">
+            <summary>
               <Scramble as="h3" text={p.title} />
+              <span className="pill">{tr(p.pill)}</span>
+              <ul className="tags">{p.tags.map(x => <li key={x.es ?? x}>{tr(x)}</li>)}</ul>
+              <i className="chev" aria-hidden="true" />
+            </summary>
+            <div className="project-body">
               <p>{tr(p.text)}</p>
               <ul className="bullets">{p.bullets.map(b => <li key={b.es}>{tr(b)}</li>)}</ul>
-              <ul className="tags">{p.tags.map(x => <li key={x.es ?? x}>{tr(x)}</li>)}</ul>
               <div className="links">
                 {p.demo && <a href={p.demo} target="_blank" rel="noopener noreferrer" className="link-arrow">{tr(ui.demo)}</a>}
                 <a href={p.code} target="_blank" rel="noopener noreferrer" className="link-arrow alt">{tr(ui.code)}</a>
               </div>
+              <ul className={`shots ${p.tall ? 'tall' : ''}`}>
+                {p.shots.map((x, i) => (
+                  <li key={x.src}><button type="button" onClick={() => setLb({ shots: p.shots, i })}><img src={x.src} alt={tr(x.alt)} loading="lazy" /></button></li>
+                ))}
+              </ul>
             </div>
-          </article>
+          </details>
         ))}
       </div>
+      <dialog ref={dlg} className="lightbox" onClose={() => setLb(null)} onClick={e => !e.target.closest('img, button, figcaption') && dlg.current.close()}
+        onKeyDown={e => { if (e.key === 'ArrowRight') go(1); if (e.key === 'ArrowLeft') go(-1); }}>
+        {cur && (
+          <figure>
+            <img src={cur.src} alt={tr(cur.alt)} />
+            <figcaption>{tr(cur.alt)} · {lb.i + 1}/{lb.shots.length}</figcaption>
+          </figure>
+        )}
+        <button type="button" className="lb-btn lb-close" onClick={() => dlg.current.close()} aria-label={tr(ui.lbClose)}>×</button>
+        {lb?.shots.length > 1 && <>
+          <button type="button" className="lb-btn lb-prev" onClick={() => go(-1)} aria-label={tr(ui.lbPrev)}>‹</button>
+          <button type="button" className="lb-btn lb-next" onClick={() => go(1)} aria-label={tr(ui.lbNext)}>›</button>
+        </>}
+      </dialog>
     </section>
   );
 };
