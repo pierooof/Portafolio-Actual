@@ -37,25 +37,32 @@ export const Logo = ({ height = 30 }) => (
 
 const Heading = ({ children }) => {
   const { tr } = usePrefs();
-  return <Scramble as="h2" className="reveal" text={tr(children)} />;
+  return <Scramble as="h2" text={tr(children)} />;
 };
 
+// Intro de ~2 s (una vez por sesión). Mientras dura, <html> lleva .booting y el collage espera para animarse.
 function Boot() {
   const { lang, tr } = usePrefs();
   const [show, setShow] = useState(() => {
-    try { const seen = sessionStorage.getItem('boot'); sessionStorage.setItem('boot', 1); return !seen && !matchMedia('(prefers-reduced-motion: reduce)').matches; } catch { return false; }
+    try {
+      const seen = sessionStorage.getItem('boot'); sessionStorage.setItem('boot', 1);
+      const on = !seen && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (on) document.documentElement.classList.add('booting');
+      return on;
+    } catch { return false; }
   });
   const [step, setStep] = useState(0);
   const lines = ui.bootLines[lang];
   useEffect(() => {
     if (!show) return;
-    const ids = lines.map((_, i) => setTimeout(() => setStep(i + 1), 300 + i * 450));
-    ids.push(setTimeout(() => setStep(99), 2400), setTimeout(() => setShow(false), 2900));
+    const ids = lines.map((_, i) => setTimeout(() => setStep(i + 1), 200 + i * 300));
+    ids.push(setTimeout(() => setStep(99), 1500), setTimeout(() => setShow(false), 2000));
     // Cualquier tecla omite la intro
     const skip = () => { setStep(99); ids.push(setTimeout(() => setShow(false), 400)); };
     addEventListener('keydown', skip);
     return () => { ids.forEach(clearTimeout); removeEventListener('keydown', skip); };
   }, []);
+  useEffect(() => { if (step === 99) document.documentElement.classList.remove('booting'); }, [step]);
   if (!show) return null;
   return (
     <div id="boot" className={step === 99 ? 'done' : 'run'} aria-hidden="true" onClick={() => setStep(99)} title={tr(ui.bootSkip)}>
@@ -98,28 +105,29 @@ function Nav() {
   );
 }
 
+// Tres demos en producción como collage: lo primero que ve quien llega es trabajo real
 const Hero = () => {
   const { tr } = usePrefs();
   return (
     <header className="hero" id="inicio">
-      <div className="hero-content">
-        <p className="badge"><b />{tr(ui.badge)}</p>
-        <h1>
-          {ui.h1.map((l, i) => <Scramble key={i} as="span" className={`line ${i === 2 ? 'grad' : ''}`} text={tr(l)} />)}
-        </h1>
-        <p className="role"><Scramble text={tr(ui.role)} /></p>
+      <div className="hero-copy">
+        <Scramble as="h1" text={tr(ui.h1)} />
         <p className="lead">{tr(ui.lead)}</p>
         <div className="cta">
           <a href="#proyectos" className="btn-primary">{tr(ui.ctaProjects)}</a>
-          <a href={CV} className="btn-primary btn-ghost">{tr(ui.cv)}</a>
-          <a href="#contacto" className="btn-primary btn-ghost">{tr(ui.ctaContact)}</a>
+          <a href={CV} className="text-link">{tr(ui.cv)}</a>
         </div>
-        <ul className="stats">
-          <li><strong>{projects.filter(p => p.demo).length}</strong><span>{tr(ui.statProjects)}</span></li>
-          <li><strong>3</strong><span>{tr(ui.statInternship)}</span></li>
-          <li><strong>2027</strong><span>{tr(ui.statDaw)}</span></li>
-        </ul>
+        <p className="avail"><i />{tr(ui.badge)}</p>
       </div>
+      <ul className="collage" aria-label={tr(ui.heroShots)}>
+        {projects.slice(0, 3).map((p, i) => (
+          <li key={p.title} className={`shot s${i}`}>
+            <a href={p.demo} target="_blank" rel="noopener noreferrer" aria-label={`${p.title}: ${tr(ui.demo)}`} title={p.title}>
+              <img src={p.shots[0].src} alt="" />
+            </a>
+          </li>
+        ))}
+      </ul>
       <div className="marquee" aria-hidden="true">
         <div>{[...marquee, ...marquee].map((m, i) => <span key={i}>{m}</span>)}</div>
       </div>
@@ -130,18 +138,11 @@ const Hero = () => {
 const About = () => {
   const { tr } = usePrefs();
   return (
-    <section id="sobre-mi" className="section reveal">
+    <section id="sobre-mi" className="section rail">
       <Heading>{ui.about}</Heading>
-      <div className="terminal spot">
-        <div className="term-head"><i /><i /><i /><span>bash — piero@ubuntu</span></div>
-        <div className="term-body">
-          <p className="cmd">whoami</p>
-          <p>{tr(ui.aboutWhoami)}</p>
-          <p className="cmd">{tr(ui.aboutFile)}</p>
-          <p>{tr(ui.aboutContext)}</p>
-          <p className="cmd">echo $STACK</p>
-          <p>Python · Flask · React · TypeScript · Node.js · MySQL · MongoDB · Git · Ubuntu · VS Code</p>
-        </div>
+      <div className="prose">
+        <p className="big">{tr(ui.aboutWhoami)}</p>
+        <p>{tr(ui.aboutContext)}</p>
       </div>
     </section>
   );
@@ -150,15 +151,17 @@ const About = () => {
 const Timeline = ({ title, items }) => {
   const { tr } = usePrefs();
   return (
-    <div className="reveal">
-      <h3 className="eyebrow">{tr(title)}</h3>
+    <div>
+      <h3>{tr(title)}</h3>
       <ol className="timeline">
         {items.map(e => (
-          <li key={e.org + (e.title.es ?? e.title)} className="spot">
+          <li key={e.org + (e.title.es ?? e.title)}>
             <time>{tr(e.time)}</time>
-            <Scramble as="h4" text={tr(e.title)} />
-            <p className="org">{e.org}</p>
-            {e.text && <p>{tr(e.text)}</p>}
+            <div>
+              <Scramble as="h4" text={tr(e.title)} />
+              <p className="org">{e.org}</p>
+              {e.text && <p>{tr(e.text)}</p>}
+            </div>
           </li>
         ))}
       </ol>
@@ -167,17 +170,12 @@ const Timeline = ({ title, items }) => {
 };
 
 const Journey = () => {
-  const { tr } = usePrefs();
   return (
-    <section id="experiencia" className="section">
+    <section id="experiencia" className="section rail">
       <Heading>{ui.journey}</Heading>
-      <div className="timeline-wrap">
+      <div className="journey">
         <Timeline title={ui.experience} items={experience} />
         <Timeline title={ui.education} items={education} />
-      </div>
-      <div className="dossier spot reveal">
-        <div><p className="eyebrow">{tr(ui.dossier)}</p><p>{tr(ui.dossierText)}</p></div>
-        <a href={CV} className="btn-primary">{tr(ui.cv)}</a>
       </div>
     </section>
   );
@@ -192,20 +190,20 @@ const Projects = () => {
   const go = n => setLb(l => ({ ...l, i: (l.i + n + l.shots.length) % l.shots.length }));
   const cur = lb && lb.shots[lb.i];
   return (
-    <section id="proyectos" className="section">
+    <section id="proyectos" className="section rail">
       <Heading>{ui.projects}</Heading>
       <div className="project-grid">
-        {projects.map((p, n) => (
-          <article key={p.title} className="project-card spot reveal">
+        {projects.map(p => (
+          <article key={p.title} className="project-card">
             <div className="project-info">
-              <div className="project-top"><span className="project-num">{String(n + 1).padStart(2, '0')}</span><span className="pill">{tr(p.pill)}</span></div>
+              <p className={`status ${p.demo ? 'live' : ''}`}>{tr(p.pill)}</p>
               <Scramble as="h3" text={p.title} />
               <p>{tr(p.text)}</p>
               <ul className="bullets">{p.bullets.map(b => <li key={b.es}>{tr(b)}</li>)}</ul>
-              <ul className="tags">{p.tags.map(x => <li key={x.es ?? x}>{tr(x)}</li>)}</ul>
+              <p className="tags">{p.tags.map(x => tr(x)).join(', ')}</p>
               <div className="links">
-                {p.demo && <a href={p.demo} target="_blank" rel="noopener noreferrer" className="link-arrow">{tr(ui.demo)}</a>}
-                <a href={p.code} target="_blank" rel="noopener noreferrer" className="link-arrow alt">{tr(ui.code)}</a>
+                {p.demo && <a href={p.demo} target="_blank" rel="noopener noreferrer" className="link-main">{tr(ui.demo)}</a>}
+                <a href={p.code} target="_blank" rel="noopener noreferrer" className="link-alt">{tr(ui.code)}</a>
               </div>
             </div>
             <button type="button" className={`preview ${p.tall ? 'tall' : ''}`} onClick={() => setLb({ shots: p.shots, i: 0 })} aria-label={`${p.title}: ${p.shots.length} ${tr(ui.shots)}`}>
@@ -236,20 +234,22 @@ const Projects = () => {
 const Stack = () => {
   const { tr } = usePrefs();
   return (
-    <section id="habilidades" className="section">
+    <section id="habilidades" className="section rail">
       <Heading>{ui.stack}</Heading>
-      <div className="stack">
+      <dl className="stack">
         {stack.map(g => (
-          <div key={g.group.es} className="stack-group spot reveal">
-            <h3>{tr(g.group)}</h3>
-            <ul className="chips">
-              {g.items.map(i => (
-                <li key={i.name}>{i.icon && <img src={i.icon} alt="" width="20" height="20" loading="lazy" className={i.invert ? 'invert' : ''} />}<Scramble text={i.name} /></li>
-              ))}
-            </ul>
+          <div key={g.group.es}>
+            <dt>{tr(g.group)}</dt>
+            <dd>
+              <ul className="chips">
+                {g.items.map(i => (
+                  <li key={i.name}>{i.icon && <img src={i.icon} alt="" width="20" height="20" loading="lazy" className={i.invert ? 'invert' : ''} />}<Scramble text={i.name} /></li>
+                ))}
+              </ul>
+            </dd>
           </div>
         ))}
-      </div>
+      </dl>
     </section>
   );
 };
@@ -278,8 +278,7 @@ const ContactForm = () => {
     }
   };
   return (
-    <form className="contact-form spot reveal" onSubmit={submit}>
-      <h3 className="eyebrow">{tr(f.title)}</h3>
+    <form className="contact-form" onSubmit={submit}>
       <label>{tr(f.name)}<input type="text" name="name" autoComplete="name" required maxLength="80" /></label>
       <label>{tr(f.email)}<input type="email" name="email" autoComplete="email" required maxLength="120" /></label>
       <label>{tr(f.message)}<textarea name="message" rows="5" required maxLength="2000" /></label>
@@ -294,18 +293,20 @@ const ContactForm = () => {
 const Contact = () => {
   const { tr } = usePrefs();
   return (
-    <section id="contacto" className="section">
+    <section id="contacto" className="section rail">
       <Heading>{ui.contact}</Heading>
-      <div className="contact-grid">
-        {socials.map(s => (
-          <a key={s.key} href={s.href} target={s.key === 'email' ? undefined : '_blank'} rel="noopener noreferrer" className="contact-card spot reveal">
-            <div className="icon"><Icon name={s.key} size={52} mono={s.key === 'github'} /></div>
-            <Scramble as="h3" text={s.label} />
-            <p>{tr(ui.contactCopy[s.key])}</p>
-          </a>
-        ))}
+      <div className="contact">
+        <div className="contact-grid">
+          {socials.map(s => (
+            <a key={s.key} href={s.href} target={s.key === 'email' ? undefined : '_blank'} rel="noopener noreferrer" className="contact-card" aria-label={s.label}>
+              <div className="icon"><Icon name={s.key} size={44} mono={s.key === 'github'} /></div>
+              <Scramble as="h3" text={s.label} />
+              <p>{tr(ui.contactCopy[s.key])}</p>
+            </a>
+          ))}
+        </div>
+        {FORM_KEY && <ContactForm />}
       </div>
-      {FORM_KEY && <ContactForm />}
     </section>
   );
 };
@@ -320,20 +321,6 @@ function Page() {
   }, [lang]);
 
   useEffect(() => {
-    // Aparición al hacer scroll
-    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.1 });
-    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-
-    // Barra de progreso + foco que sigue al cursor en tarjetas
-    const bar = document.getElementById('progress');
-    const onScroll = () => { bar.style.width = (100 * scrollY) / Math.max(1, document.documentElement.scrollHeight - innerHeight) + '%'; };
-    const onMove = e => {
-      const el = e.target.closest?.('.spot');
-      if (!el) return;
-      const r = el.getBoundingClientRect();
-      el.style.setProperty('--mx', e.clientX - r.left + 'px');
-      el.style.setProperty('--my', e.clientY - r.top + 'px');
-    };
     // Proyectos en cascada: cada tarjeta se pega un poco más abajo que la anterior (si es más alta que la
     // pantalla, más arriba para verla entera) y la tapada se encoge y oscurece según avanza la siguiente.
     const cards = [...document.querySelectorAll('.project-card')];
@@ -355,23 +342,18 @@ function Page() {
     // La altura de las tarjetas cambia con el idioma, las fuentes o el ancho: recalcula en cada caso
     const ro = new ResizeObserver(relayout);
     cards.forEach(c => ro.observe(c));
-    addEventListener('scroll', onScroll, { passive: true });
     addEventListener('scroll', stack, { passive: true });
     addEventListener('resize', relayout);
-    addEventListener('mousemove', onMove);
-    onScroll();
     relayout();
     return () => {
-      io.disconnect();
-      removeEventListener('scroll', onScroll); removeEventListener('scroll', stack); removeEventListener('resize', relayout);
-      removeEventListener('mousemove', onMove); ro.disconnect();
+      removeEventListener('scroll', stack); removeEventListener('resize', relayout);
+      ro.disconnect();
     };
   }, []);
 
   return (
     <>
       <Boot />
-      <div id="progress" />
       <a href="#main" className="skip-link">{tr(ui.skip)}</a>
       <Nav />
       <main id="main">
@@ -382,7 +364,7 @@ function Page() {
         <Stack />
         <Contact />
       </main>
-      <footer><Mark size={28} /><p>&copy; {new Date().getFullYear()} Piero Funes · pierooof.dev</p></footer>
+      <footer><Mark size={28} /><p>&copy; {new Date().getFullYear()} Piero Funes, pierooof.dev</p></footer>
       {typeof window !== 'undefined' && <Telemetry />}
     </>
   );

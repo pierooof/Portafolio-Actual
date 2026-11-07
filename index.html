@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Piero Funes | Desarrollador web junior · Python, Flask y React</title>
     <meta name="description" content="Portafolio de Piero Funes, desarrollador web junior. Python, Flask, React, TypeScript, MySQL y MongoDB. Proyectos en producción: Resilio, Respira y CaféPunto.">
-    <meta name="theme-color" content="#000000">
+    <meta name="theme-color" content="#0e1a16">
     <meta name="color-scheme" content="dark light">
     <link rel="canonical" href="https://portafolio.pierooof.dev/">
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Piero Funes","jobTitle":"Desarrollador Web Junior","url":"https://portafolio.pierooof.dev/","image":"https://portafolio.pierooof.dev/icon-512.png","sameAs":["https://github.com/pierooof","https://www.linkedin.com/in/piero-funes-larios-44360a166","https://cv.pierooof.dev/"],"knowsAbout":["Python","Flask","React","TypeScript","PHP","MySQL"]}</script>
@@ -38,12 +38,10 @@
             try { t = localStorage.getItem('theme'); } catch (e) {}
             if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
             document.documentElement.dataset.theme = t;
-            document.querySelector('meta[name="theme-color"]').content = t === 'light' ? '#F1F8F5' : '#000000';
+            document.querySelector('meta[name="theme-color"]').content = t === 'light' ? '#F1F8F5' : '#0e1a16';
         })();
     </script>
 
-    <!-- Sin JS el contenido prerenderizado se ve igual: las animaciones de aparición no se activarían -->
-    <noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
 </head>
 
 <body>

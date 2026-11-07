@@ -15,7 +15,7 @@ export function PrefsProvider({ children }) {
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#000000' : '#F1F8F5');
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#0e1a16' : '#F1F8F5');
   }, [theme]);
 
   useEffect(() => { document.documentElement.lang = lang; }, [lang]);
