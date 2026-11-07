@@ -3,7 +3,7 @@ import Scramble from './Scramble';
 import Telemetry from './Telemetry';
 import { PrefsProvider, usePrefs } from './prefs';
 import { icons } from './icons';
-import { CV, links, socials, stack, marquee, experience, education, projects, ui } from './data';
+import { CV, FORM_KEY, links, socials, stack, marquee, experience, education, projects, ui } from './data';
 
 const Icon = ({ name, size = 22, mono }) => {
   const { viewBox, fill, d } = icons[name];
@@ -183,7 +183,7 @@ const Journey = () => {
   );
 };
 
-// Acordeón nativo: <details name="projects"> cierra los demás solos. Las capturas se amplían en un <dialog> nativo.
+// Tarjetas apiladas (cascada). La captura principal abre un <dialog> nativo con todas las capturas.
 const Projects = () => {
   const { tr } = usePrefs();
   const [lb, setLb] = useState(null); // { shots, i }
@@ -195,31 +195,27 @@ const Projects = () => {
     <section id="proyectos" className="section">
       <Heading>{ui.projects}</Heading>
       <div className="project-grid">
-        {projects.map(p => (
-          <details key={p.title} name="projects" className="project-card spot reveal">
-            <summary>
+        {projects.map((p, n) => (
+          <article key={p.title} className="project-card spot reveal">
+            <div className="project-info">
+              <div className="project-top"><span className="project-num">{String(n + 1).padStart(2, '0')}</span><span className="pill">{tr(p.pill)}</span></div>
               <Scramble as="h3" text={p.title} />
-              <span className="pill">{tr(p.pill)}</span>
-              <ul className="tags">{p.tags.map(x => <li key={x.es ?? x}>{tr(x)}</li>)}</ul>
-              <i className="chev" aria-hidden="true" />
-            </summary>
-            <div className="project-body">
               <p>{tr(p.text)}</p>
               <ul className="bullets">{p.bullets.map(b => <li key={b.es}>{tr(b)}</li>)}</ul>
+              <ul className="tags">{p.tags.map(x => <li key={x.es ?? x}>{tr(x)}</li>)}</ul>
               <div className="links">
                 {p.demo && <a href={p.demo} target="_blank" rel="noopener noreferrer" className="link-arrow">{tr(ui.demo)}</a>}
                 <a href={p.code} target="_blank" rel="noopener noreferrer" className="link-arrow alt">{tr(ui.code)}</a>
               </div>
-              <ul className={`shots ${p.tall ? 'tall' : ''}`}>
-                {p.shots.map((x, i) => (
-                  <li key={x.src}><button type="button" onClick={() => setLb({ shots: p.shots, i })}><img src={x.src} alt={tr(x.alt)} loading="lazy" /></button></li>
-                ))}
-              </ul>
             </div>
-          </details>
+            <button type="button" className={`preview ${p.tall ? 'tall' : ''}`} onClick={() => setLb({ shots: p.shots, i: 0 })} aria-label={`${p.title}: ${p.shots.length} ${tr(ui.shots)}`}>
+              <img src={p.shots[0].src} alt={tr(p.shots[0].alt)} loading="lazy" />
+              {p.shots.length > 1 && <span className="count">{p.shots.length} {tr(ui.shots)}</span>}
+            </button>
+          </article>
         ))}
       </div>
-      <dialog ref={dlg} className="lightbox" onClose={() => setLb(null)} onClick={e => !e.target.closest('img, button, figcaption') && dlg.current.close()}
+      <dialog ref={dlg} className="lightbox" aria-label={cur ? tr(cur.alt) : tr(ui.projects)} onClose={() => setLb(null)} onClick={e => !e.target.closest('img, button, figcaption') && dlg.current.close()}
         onKeyDown={e => { if (e.key === 'ArrowRight') go(1); if (e.key === 'ArrowLeft') go(-1); }}>
         {cur && (
           <figure>
@@ -258,6 +254,43 @@ const Stack = () => {
   );
 };
 
+const ContactForm = () => {
+  const { tr } = usePrefs();
+  const f = ui.form;
+  const [status, setStatus] = useState(null); // null | 'sending' | 'ok' | 'error'
+  const submit = async e => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const data = Object.fromEntries(new FormData(form));
+    if (data.botcheck) return; // trampa para bots: un humano no lo ve ni lo marca
+    setStatus('sending');
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ ...data, access_key: FORM_KEY, subject: 'Mensaje desde el portafolio' }),
+      });
+      if (!(await res.json()).success) throw new Error('web3forms');
+      form.reset();
+      setStatus('ok');
+    } catch {
+      setStatus('error');
+    }
+  };
+  return (
+    <form className="contact-form spot reveal" onSubmit={submit}>
+      <h3 className="eyebrow">{tr(f.title)}</h3>
+      <label>{tr(f.name)}<input type="text" name="name" autoComplete="name" required maxLength="80" /></label>
+      <label>{tr(f.email)}<input type="email" name="email" autoComplete="email" required maxLength="120" /></label>
+      <label>{tr(f.message)}<textarea name="message" rows="5" required maxLength="2000" /></label>
+      <input type="checkbox" name="botcheck" className="botcheck" tabIndex="-1" autoComplete="off" aria-hidden="true" />
+      <button type="submit" className="btn-primary" disabled={status === 'sending'}>{tr(status === 'sending' ? f.sending : f.send)}</button>
+      <p className={`form-msg ${status === 'error' ? 'err' : ''}`} role="status">{status === 'ok' && tr(f.ok)}{status === 'error' && tr(f.error)}</p>
+      <p className="form-note">{tr(f.note)}</p>
+    </form>
+  );
+};
+
 const Contact = () => {
   const { tr } = usePrefs();
   return (
@@ -272,6 +305,7 @@ const Contact = () => {
           </a>
         ))}
       </div>
+      {FORM_KEY && <ContactForm />}
     </section>
   );
 };
@@ -300,10 +334,38 @@ function Page() {
       el.style.setProperty('--mx', e.clientX - r.left + 'px');
       el.style.setProperty('--my', e.clientY - r.top + 'px');
     };
+    // Proyectos en cascada: cada tarjeta se pega un poco más abajo que la anterior (si es más alta que la
+    // pantalla, más arriba para verla entera) y la tapada se encoge y oscurece según avanza la siguiente.
+    const cards = [...document.querySelectorAll('.project-card')];
+    const tops = [];
+    const layout = () => {
+      const base = innerWidth <= 860 ? 76 : 88;
+      cards.forEach((c, i) => { tops[i] = Math.min(base + i * 14, innerHeight - c.offsetHeight - 12); c.style.setProperty('--top', tops[i] + 'px'); });
+    };
+    const stack = () => {
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      cards.forEach((c, i) => {
+        if (!cards[i + 1]) return;
+        const p = Math.min(1, Math.max(0, 1 - (cards[i + 1].getBoundingClientRect().top - tops[i + 1]) / c.offsetHeight));
+        c.style.scale = 1 - p * 0.05;
+        c.style.filter = p ? `brightness(${1 - p * 0.4})` : '';
+      });
+    };
+    const relayout = () => { layout(); stack(); };
+    // La altura de las tarjetas cambia con el idioma, las fuentes o el ancho: recalcula en cada caso
+    const ro = new ResizeObserver(relayout);
+    cards.forEach(c => ro.observe(c));
     addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('scroll', stack, { passive: true });
+    addEventListener('resize', relayout);
     addEventListener('mousemove', onMove);
     onScroll();
-    return () => { io.disconnect(); removeEventListener('scroll', onScroll); removeEventListener('mousemove', onMove); };
+    relayout();
+    return () => {
+      io.disconnect();
+      removeEventListener('scroll', onScroll); removeEventListener('scroll', stack); removeEventListener('resize', relayout);
+      removeEventListener('mousemove', onMove); ro.disconnect();
+    };
   }, []);
 
   return (
@@ -320,8 +382,8 @@ function Page() {
         <Stack />
         <Contact />
       </main>
-      <footer><Mark size={28} /><p>&copy; 2026 Piero Funes · pierooof.dev</p></footer>
-      <Telemetry />
+      <footer><Mark size={28} /><p>&copy; {new Date().getFullYear()} Piero Funes · pierooof.dev</p></footer>
+      {typeof window !== 'undefined' && <Telemetry />}
     </>
   );
 }

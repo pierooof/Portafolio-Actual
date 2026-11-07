@@ -1,5 +1,29 @@
 # Portafolio
 
-Este repositorio contiene una colección de mis trabajos realizados en clase y mis proyectos personales.
+Portafolio personal de Piero Funes, desarrollador web junior: <https://portafolio.pierooof.dev/>
 
-Enlace al repositorio: [https://github.com/pierooof/Portafolio](portafolio.pierooof.dev)
+Hecho con React 18 y Vite, sin librerías de UI. Bilingüe (ES/EN), tema claro/oscuro y proyectos en cascada con visor de capturas.
+
+## Uso
+
+```bash
+npm install
+npm run dev      # servidor de desarrollo
+npm run build    # genera dist/ y prerenderiza el HTML (scripts/prerender.mjs)
+npm run preview  # sirve dist/ en local
+```
+
+## Estructura
+
+- `src/data.js`: todo el contenido (proyectos, trayectoria, stack, textos ES/EN). Para añadir un proyecto basta con editar este archivo.
+- `src/App.jsx`: secciones de la página y efecto de cascada de proyectos.
+- `css/base.css`: sistema de diseño reutilizable (tokens, tipografía, botones, tarjetas). `css/style.css`: estilos del portafolio.
+- `img/`: se sirve desde la raíz (`publicDir`): iconos, `og-image.png` y capturas en `img/projects/<proyecto>/*.webp`.
+
+## Formulario de contacto
+
+Usa [Web3Forms](https://web3forms.com): pide una clave con tu correo y pégala en `FORM_KEY` (`src/data.js`). Mientras esté vacía, el formulario no se muestra.
+
+## Despliegue
+
+Lo hace Cloudflare a partir de `dist/` (ver `wrangler.jsonc`).

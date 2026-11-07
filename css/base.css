@@ -4,7 +4,7 @@
    No contiene nada específico de las secciones del portafolio.
 
    Uso en otro proyecto:
-     1. Carga las fuentes 'Inter' y 'JetBrains Mono' (o cambia --font-*).
+     1. Carga las fuentes 'Inter' y 'JetBrains Mono' (aquí con @fontsource-variable; o cambia --font-*).
      2. Importa este archivo antes que tu CSS.
      3. Pon data-theme="light" | "dark" en <html> (por defecto, oscuro).
    ===================================================================== */
@@ -58,8 +58,8 @@
 /* ---------- 2. TOKENS: ESCALAS (iguales en todos los temas) ---------- */
 :root {
     /* Tipografía */
-    --font-mono: 'JetBrains Mono', monospace;
-    --font-sans: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', monospace;
+    --font-sans: 'Inter Variable', 'Inter', sans-serif;
     --lh-body: 1.6;
     --fs-xs: .75rem;
     --fs-sm: .85rem;

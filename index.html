@@ -42,14 +42,12 @@
         })();
     </script>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=JetBrains+Mono:wght@400;700&family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
+    <!-- Sin JS el contenido prerenderizado se ve igual: las animaciones de aparición no se activarían -->
+    <noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
 </head>
 
 <body>
     <div id="root"></div>
-    <noscript>Este portafolio necesita JavaScript / This portfolio needs JavaScript. CV: https://cv.pierooof.dev/</noscript>
     <script type="module" src="/src/main.jsx"></script>
 </body>
 

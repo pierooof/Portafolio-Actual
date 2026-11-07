@@ -61,37 +61,28 @@
 .dossier .eyebrow { margin-bottom: .4rem; }
 .dossier p:not(.eyebrow) { color: var(--muted); }
 
-/* ===== PROYECTOS (acordeón) ===== */
-.project-grid { display: grid; gap: var(--space-3); max-width: 900px; }
-.project-card { overflow: hidden; transition: border-color var(--dur), box-shadow var(--dur), transform var(--dur-reveal) ease, opacity var(--dur-reveal) ease; }
-.project-card:hover, .project-card[open] { border-color: var(--primary); }
-.project-card:hover { box-shadow: var(--shadow-glow); }
-.project-card summary { list-style: none; cursor: pointer; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-3); padding: var(--space-3) var(--space-4); }
-.project-card summary::-webkit-details-marker { display: none; }
-.project-card summary:focus-visible { outline: 2px solid var(--primary); outline-offset: -2px; }
-.project-card summary h3 { font-size: 1.4rem; }
+/* ===== PROYECTOS (cascada) ===== */
+/* Cada tarjeta se pega arriba (--top lo calcula App.jsx) y tapa a la anterior, por eso el fondo es opaco */
+.project-grid { display: grid; gap: var(--space-5); max-width: 1000px; }
+.project-card { position: sticky; top: var(--top, 88px); transform-origin: top; display: grid; grid-template-columns: 1.1fr 1fr; gap: var(--space-5); align-items: center; padding: var(--space-5); background: var(--surface); box-shadow: 0 -24px 60px -28px rgba(0, 0, 0, .55); transition: border-color var(--dur), transform var(--dur-reveal) ease, opacity var(--dur-reveal) ease; }
+.project-card:hover { border-color: var(--primary); }
+.project-info { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-3); }
+.project-top { display: flex; align-items: center; gap: var(--space-3); }
+.project-num { font-family: var(--font-mono); font-size: var(--fs-sm); color: var(--muted); }
+.project-info h3 { font-size: clamp(1.8rem, 4vw, 2.4rem); line-height: 1.1; }
+.project-info > p { color: var(--muted); }
 .pill { padding: var(--space-1) .8rem; border-radius: var(--radius-pill); border: 1px solid var(--primary); color: var(--accent); font-family: var(--font-mono); font-size: .72rem; white-space: nowrap; }
-.project-card summary .tags { margin-left: auto; }
-.chev { width: .6rem; height: .6rem; border-right: 2px solid var(--primary); border-bottom: 2px solid var(--primary); transform: rotate(-45deg); transition: transform var(--dur); }
-.project-card[open] .chev { transform: rotate(45deg); }
-.project-body { padding: 0 var(--space-4) var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); }
-.project-body > p { color: var(--muted); }
 .bullets { list-style: none; display: grid; gap: .4rem; color: var(--muted); font-size: .92rem; }
 .bullets li::before { content: "▹ "; color: var(--primary); }
 .tags, .chips { list-style: none; display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .tags li { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--accent); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: .2rem .6rem; }
 .links { display: flex; gap: var(--space-4); }
-.shots { list-style: none; display: flex; flex-wrap: wrap; gap: var(--space-2); }
-.shots button { display: block; padding: 0; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; background: var(--surface); cursor: zoom-in; transition: border-color var(--dur), transform var(--dur); }
-.shots button:hover, .shots button:focus-visible { border-color: var(--primary); transform: translateY(-2px); }
-.shots img { display: block; height: 130px; width: auto; max-width: 100%; }
-.shots.tall img { height: 260px; }
-/* Animación de apertura donde el navegador la soporta (si no, abre sin animar) */
-@media (prefers-reduced-motion: no-preference) {
-  :root { interpolate-size: allow-keywords; }
-  .project-card::details-content { block-size: 0; overflow: clip; transition: block-size .4s ease, content-visibility .4s allow-discrete; }
-  .project-card[open]::details-content { block-size: auto; }
-}
+/* Captura principal: abre el visor con todas las capturas del proyecto */
+.preview { position: relative; display: block; width: 100%; aspect-ratio: 16 / 10; padding: 0; border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; background: var(--bg); cursor: zoom-in; transition: border-color var(--dur), transform var(--dur); }
+.preview:hover, .preview:focus-visible { border-color: var(--primary); transform: translateY(-2px); }
+.preview img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.preview.tall img { object-fit: contain; }
+.count { position: absolute; right: .6rem; bottom: .6rem; padding: .25rem .7rem; border: 1px solid var(--primary); border-radius: var(--radius-pill); background: var(--pill-bg); color: var(--accent); font-family: var(--font-mono); font-size: .72rem; }
 
 /* Visor de capturas */
 body:has(dialog[open]) { overflow: hidden; }
@@ -108,10 +99,13 @@ body:has(dialog[open]) { overflow: hidden; }
 .lb-prev { left: var(--space-3); }
 .lb-next { right: var(--space-3); }
 @media (max-width: 600px) {
-  .project-card summary .tags { margin-left: 0; width: 100%; order: 3; }
-  .chev { margin-left: auto; }
-  .shots img { height: 100px; }
-  .shots.tall img { height: 150px; }
+  /* Tarjetas compactas: sin los puntos y con la captura más baja, para que quepan bajo la barra fija */
+  .project-grid { gap: var(--space-4); }
+  .project-card { grid-template-columns: 1fr; gap: var(--space-3); padding: var(--space-3) var(--space-3) var(--space-3); }
+  .project-info { gap: .65rem; }
+  .project-info h3 { font-size: 1.6rem; }
+  .project-info .bullets { display: none; }
+  .preview { aspect-ratio: 16 / 9; }
   .lb-prev, .lb-next { top: auto; bottom: var(--space-3); translate: none; }
 }
 
@@ -131,6 +125,19 @@ body:has(dialog[open]) { overflow: hidden; }
 .contact-card h3 { font-size: 1.3rem; margin-bottom: .4rem; }
 .contact-card p { font-size: .95rem; color: var(--muted); }
 .contact-card:hover h3 { color: var(--primary); }
+
+/* Formulario de contacto */
+.contact-form { display: grid; gap: var(--space-3); max-width: 640px; margin-top: var(--space-5); padding: var(--space-5); }
+.contact-form .eyebrow { margin-bottom: 0; }
+.contact-form label { display: grid; gap: .35rem; font-family: var(--font-mono); font-size: var(--fs-sm); color: var(--muted); }
+.contact-form input:not(.botcheck), .contact-form textarea { width: 100%; padding: .7rem .9rem; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); color: var(--text); font: inherit; font-size: 1rem; resize: vertical; transition: border-color var(--dur-fast); }
+.contact-form input:not(.botcheck):focus, .contact-form textarea:focus { outline: none; border-color: var(--primary); }
+.contact-form .botcheck { position: absolute; left: -9999px; }
+.contact-form button { justify-self: start; cursor: pointer; }
+.contact-form button:disabled { opacity: .6; cursor: wait; }
+.form-msg { min-height: 1.5em; font-size: var(--fs-sm); color: var(--accent); }
+.form-msg.err { color: var(--danger); }
+.form-note { font-size: var(--fs-xs); color: var(--muted); }
 
 footer { display: flex; flex-direction: column; align-items: center; gap: .75rem; padding: var(--space-6); font-family: var(--font-mono); font-size: var(--fs-sm); color: var(--muted); }
 

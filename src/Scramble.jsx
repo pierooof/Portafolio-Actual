@@ -41,7 +41,7 @@ export default function Scramble({ text, as: Tag = 'span', ...rest }) {
   };
 
   return (
-    <Tag {...rest} onMouseEnter={run} onFocus={run} aria-label={text}>
+    <Tag {...rest} onMouseEnter={run} onFocus={run} aria-label={Tag === 'span' ? undefined : text}>
       <span className="sc" ref={box}>
         <span className={`sc-ghost${anim === null ? '' : ' hide'}`} ref={ghost}>{text}</span>
         {anim !== null && (

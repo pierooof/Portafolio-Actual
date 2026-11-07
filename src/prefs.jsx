@@ -5,12 +5,13 @@ import { createContext, useContext, useEffect, useState } from 'react';
 const Ctx = createContext(null);
 export const usePrefs = () => useContext(Ctx);
 
+const ssr = typeof window === 'undefined'; // durante el prerender del build
 const read = (key, fallback) => { try { return localStorage.getItem(key) || fallback; } catch { return fallback; } };
 const save = (key, value) => { try { localStorage.setItem(key, value); } catch { /* modo privado */ } };
 
 export function PrefsProvider({ children }) {
-  const [theme, setTheme] = useState(() => document.documentElement.dataset.theme || 'dark');
-  const [lang, setLang] = useState(() => read('lang', navigator.language?.startsWith('es') ? 'es' : 'en'));
+  const [theme, setTheme] = useState(() => (ssr ? 'dark' : document.documentElement.dataset.theme || 'dark'));
+  const [lang, setLang] = useState(() => (ssr ? 'es' : read('lang', navigator.language?.startsWith('es') ? 'es' : 'en')));
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;

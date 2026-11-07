@@ -1,6 +1,10 @@
-const D = 'https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/icons/';
+const D = 'icons/'; // devicon v2.16.0, copiado en img/icons/
 // Cada tecnología: nombre, ruta devicon (o null), invertir color en modo oscuro
 const t = (name, d = null, invert = false) => ({ name, icon: d && `${D}${d}.svg`, invert });
+
+// Clave pública de Web3Forms (web3forms.com: se pide con tu correo y llega a tu bandeja; no es secreta).
+// Mientras esté vacía, el formulario de contacto no se muestra.
+export const FORM_KEY = 'e9d9c2c0-b2cd-4538-9ed9-db9093ac269f';
 
 export const CV = 'https://cv.pierooof.dev/?origen=portafolio';
 
@@ -141,7 +145,17 @@ export const projects = [
       { es: 'Frontend con JavaScript y Bootstrap sobre backend PHP.', en: 'JavaScript and Bootstrap frontend on a PHP backend.' },
     ],
     tags: ['PHP', 'MySQL', 'JavaScript', 'Bootstrap'],
-    shots: [s('retroplay/catalogo', 'Captura de Retroplay', 'RetroPlay screenshot')],
+    shots: [
+      s('retroplay/inicio-dark', 'Catálogo en tema oscuro', 'Catalogue in dark theme'),
+      s('retroplay/detalle-producto', 'Detalle de un producto', 'Product details'),
+      s('retroplay/carrito', 'Carrito con cantidades y semanas de alquiler', 'Cart with quantities and rental weeks'),
+      s('retroplay/reservas', 'Historial de reservas', 'Reservation history'),
+      s('retroplay/mi-cuenta', 'Gestión de la cuenta de usuario', 'User account management'),
+      s('retroplay/login', 'Inicio de sesión', 'Sign in'),
+      s('retroplay/inicio-light', 'Catálogo en tema claro', 'Catalogue in light theme'),
+      s('retroplay/inicio-movil', 'Catálogo en móvil', 'Catalogue on mobile'),
+      s('retroplay/carrito-movil', 'Carrito en móvil', 'Cart on mobile'),
+    ],
     code: 'https://github.com/samonzfu/Retroplay',
   },
 ];
@@ -184,6 +198,7 @@ export const ui = {
   dossier: { es: 'Dossier profesional', en: 'Professional dossier' },
   dossierText: { es: 'Resumen de mi experiencia, formación y proyectos destacados.', en: 'A summary of my experience, education and featured projects.' },
   projects: { es: 'Proyectos', en: 'Projects' },
+  shots: { es: 'capturas', en: 'screenshots' },
   lbClose: { es: 'Cerrar', en: 'Close' },
   lbPrev: { es: 'Anterior', en: 'Previous' },
   lbNext: { es: 'Siguiente', en: 'Next' },
@@ -191,6 +206,17 @@ export const ui = {
   code: { es: 'Código →', en: 'Code →' },
   stack: { es: 'Stack', en: 'Stack' },
   contact: { es: 'Hablemos', en: 'Let’s talk' },
+  form: {
+    title: { es: 'O escríbeme aquí', en: 'Or write to me here' },
+    name: { es: 'Nombre', en: 'Name' },
+    email: { es: 'Correo', en: 'Email' },
+    message: { es: 'Mensaje', en: 'Message' },
+    send: { es: 'Enviar mensaje', en: 'Send message' },
+    sending: { es: 'Enviando…', en: 'Sending…' },
+    ok: { es: '¡Mensaje enviado! Te responderé pronto.', en: 'Message sent! I’ll get back to you soon.' },
+    error: { es: 'No se pudo enviar. Inténtalo de nuevo o escríbeme por correo.', en: 'Could not send. Try again or email me directly.' },
+    note: { es: 'Tu mensaje llega a mi correo mediante Web3Forms.', en: 'Your message reaches my inbox via Web3Forms.' },
+  },
   contactCopy: {
     github: { es: 'Mira mi código', en: 'See my code' },
     linkedin: { es: 'Conectemos profesionalmente', en: 'Let’s connect professionally' },
