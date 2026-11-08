@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Scramble from './Scramble';
 import Telemetry from './Telemetry';
+import { startDriver } from './driver';
 import { PrefsProvider, usePrefs } from './prefs';
 import { icons } from './icons';
 import { CV, FORM_KEY, links, socials, stack, marquee, experience, education, projects, ui } from './data';
@@ -13,31 +14,28 @@ const Icon = ({ name, size = 22, mono }) => {
 // Marca pierooof.dev (SVG de tu pack de branding). El texto usa currentColor para valer en claro y oscuro.
 const MarkPaths = () => (
   <>
-    <g fill="none" stroke="#5CB79A" strokeWidth="13" strokeLinecap="round" strokeLinejoin="round"><path d="M96,40H60V160H96" /><circle cx="96" cy="76" r="36" /><path d="M131,62H154V90H134" /></g>
-    <circle cx="96" cy="76" r="11" fill="#F0B44C" />
+    <g fill="none" stroke="#5CB79A" strokeWidth="13" strokeLinecap="round" strokeLinejoin="round"><path pathLength="1" d="M96,40H60V160H96" /><circle pathLength="1" cx="96" cy="76" r="36" /><path pathLength="1" d="M131,62H154V90H134" /></g>
+    <circle pathLength="1" cx="96" cy="76" r="11" fill="#F0B44C" />
   </>
-);
-export const Mark = ({ size = 40 }) => (
-  <svg viewBox="0 0 120 200" width={size * 0.6} height={size} aria-hidden="true"><g transform="translate(-23.5 0)"><MarkPaths /></g></svg>
 );
 export const Logo = ({ height = 30 }) => (
   <svg viewBox="0 0 1000.8 200" height={height} width={(height * 1000.8) / 200} role="img" aria-label="pierooof.dev">
     <g transform="translate(-23.5 0)"><MarkPaths /></g>
     <g transform="translate(182.4 -8) scale(1.35)">
       <g fill="none" stroke="currentColor" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M0,60V130" /><circle cx="20" cy="80" r="20" /><path d="M58,60V100" /><circle fill="currentColor" stroke="none" cx="58" cy="38" r="5.5" />
-        <path d="M80,80H120A20 20 0 1 0 114.14,94.14" /><path d="M138,60V100M138,80A20 20 0 0 1 158,60" />
-        <circle cx="200" cy="80" r="20" /><circle cx="258" cy="80" r="20" /><circle cx="316" cy="80" r="20" />
-        <path d="M366,100V47A15 15 0 0 1 381,32H388M354,62H380" /><circle fill="#F0B44C" stroke="none" cx="408" cy="98" r="6" />
-        <circle cx="448" cy="80" r="20" /><path d="M468,30V100" /><path d="M486,80H526A20 20 0 1 0 520.14,94.14" /><path d="M544,60L562,100L580,60" />
+        <path pathLength="1" d="M0,60V130" /><circle pathLength="1" cx="20" cy="80" r="20" /><path pathLength="1" d="M58,60V100" /><circle fill="currentColor" stroke="none" cx="58" cy="38" r="5.5" />
+        <path pathLength="1" d="M80,80H120A20 20 0 1 0 114.14,94.14" /><path pathLength="1" d="M138,60V100M138,80A20 20 0 0 1 158,60" />
+        <circle pathLength="1" cx="200" cy="80" r="20" /><circle pathLength="1" cx="258" cy="80" r="20" /><circle pathLength="1" cx="316" cy="80" r="20" />
+        <path pathLength="1" d="M366,100V47A15 15 0 0 1 381,32H388M354,62H380" /><circle fill="#F0B44C" stroke="none" cx="408" cy="98" r="6" />
+        <circle pathLength="1" cx="448" cy="80" r="20" /><path pathLength="1" d="M468,30V100" /><path pathLength="1" d="M486,80H526A20 20 0 1 0 520.14,94.14" /><path pathLength="1" d="M544,60L562,100L580,60" />
       </g>
     </g>
   </svg>
 );
 
-const Heading = ({ children }) => {
+const Heading = ({ children, className }) => {
   const { tr } = usePrefs();
-  return <Scramble as="h2" text={tr(children)} />;
+  return <Scramble as="h2" className={className} text={tr(children)} />;
 };
 
 // Intro de ~2 s (una vez por sesión). Mientras dura, <html> lleva .booting y el collage espera para animarse.
@@ -66,8 +64,7 @@ function Boot() {
   if (!show) return null;
   return (
     <div id="boot" className={step === 99 ? 'done' : 'run'} aria-hidden="true" onClick={() => setStep(99)} title={tr(ui.bootSkip)}>
-      <Mark size={72} />
-      <div className="boot-title">&lt;System.Init/&gt;<span className="cursor">_</span></div>
+      <Logo height={64} />
       <div className="boot-bar"><i /></div>
       <pre className="term">{lines.slice(0, step).join('\n')}</pre>
     </div>
@@ -81,7 +78,7 @@ function Nav() {
   const [open, setOpen] = useState(false);
   const { theme, lang, toggleTheme, toggleLang, tr } = usePrefs();
   return (
-    <nav className={open ? 'menu-open' : ''}>
+    <nav className={`topbar ${open ? 'menu-open' : ''}`}>
       <a href="#" className="logo" aria-label={tr(ui.home)}><Logo height={30} /></a>
       <ul id="nav-links" className={`nav-links ${open ? 'active' : ''}`} onClick={e => e.target.closest('a') && setOpen(false)}>
         <li className="menu-socials">
@@ -105,25 +102,32 @@ function Nav() {
   );
 }
 
-// Tres demos en producción como collage: lo primero que ve quien llega es trabajo real
+// Titular a sangre: el punto ámbar del final es el de pierooof.dev (el "en vivo"), y late.
+// Debajo, tres demos en producción: lo primero que ve quien llega es trabajo real.
 const Hero = () => {
   const { tr } = usePrefs();
+  const lines = tr(ui.h1).split(' / ');
   return (
     <header className="hero" id="inicio">
+      <h1 aria-label={lines.join(' ') + '.'}>
+        {lines.map((l, i) => (
+          <span key={i} className="ln" aria-hidden="true"><span style={{ '--i': i }}>{l}{i === lines.length - 1 && <i className="dot" />}</span></span>
+        ))}
+      </h1>
       <div className="hero-copy">
-        <Scramble as="h1" text={tr(ui.h1)} />
         <p className="lead">{tr(ui.lead)}</p>
         <div className="cta">
           <a href="#proyectos" className="btn-primary">{tr(ui.ctaProjects)}</a>
           <a href={CV} className="text-link">{tr(ui.cv)}</a>
         </div>
-        <p className="avail"><i />{tr(ui.badge)}</p>
+        <p className="avail label"><i />{tr(ui.badge)}</p>
       </div>
       <ul className="collage" aria-label={tr(ui.heroShots)}>
         {projects.slice(0, 3).map((p, i) => (
           <li key={p.title} className={`shot s${i}`}>
-            <a href={p.demo} target="_blank" rel="noopener noreferrer" aria-label={`${p.title}: ${tr(ui.demo)}`} title={p.title}>
+            <a href={p.demo} target="_blank" rel="noopener noreferrer" aria-label={`${p.title}: ${tr(ui.demo)}`}>
               <img src={p.shots[0].src} alt="" />
+              <span className="tag label"><i />{p.title}</span>
             </a>
           </li>
         ))}
@@ -138,8 +142,8 @@ const Hero = () => {
 const About = () => {
   const { tr } = usePrefs();
   return (
-    <section id="sobre-mi" className="section rail">
-      <Heading>{ui.about}</Heading>
+    <section id="sobre-mi" className="section about">
+      <Heading className="label">{ui.about}</Heading>
       <div className="prose">
         <p className="big">{tr(ui.aboutWhoami)}</p>
         <p>{tr(ui.aboutContext)}</p>
@@ -152,7 +156,7 @@ const Timeline = ({ title, items }) => {
   const { tr } = usePrefs();
   return (
     <div>
-      <h3>{tr(title)}</h3>
+      <h3 className="label">{tr(title)}</h3>
       <ol className="timeline">
         {items.map(e => (
           <li key={e.org + (e.title.es ?? e.title)}>
@@ -171,8 +175,8 @@ const Timeline = ({ title, items }) => {
 
 const Journey = () => {
   return (
-    <section id="experiencia" className="section rail">
-      <Heading>{ui.journey}</Heading>
+    <section id="experiencia" className="section journey-sec">
+      <Heading className="h-xl">{ui.journey}</Heading>
       <div className="journey">
         <Timeline title={ui.experience} items={experience} />
         <Timeline title={ui.education} items={education} />
@@ -190,13 +194,12 @@ const Projects = () => {
   const go = n => setLb(l => ({ ...l, i: (l.i + n + l.shots.length) % l.shots.length }));
   const cur = lb && lb.shots[lb.i];
   return (
-    <section id="proyectos" className="section rail">
-      <Heading>{ui.projects}</Heading>
+    <section id="proyectos" className="section projects-sec">
+      <Heading className="h-xl">{ui.projects}</Heading>
       <div className="project-grid">
         {projects.map(p => (
-          <article key={p.title} className="project-card">
+          <article key={p.title} className="project-card" style={{ '--c': p.accent }}>
             <div className="project-info">
-              <p className={`status ${p.demo ? 'live' : ''}`}>{tr(p.pill)}</p>
               <Scramble as="h3" text={p.title} />
               <p>{tr(p.text)}</p>
               <ul className="bullets">{p.bullets.map(b => <li key={b.es}>{tr(b)}</li>)}</ul>
@@ -234,16 +237,16 @@ const Projects = () => {
 const Stack = () => {
   const { tr } = usePrefs();
   return (
-    <section id="habilidades" className="section rail">
-      <Heading>{ui.stack}</Heading>
+    <section id="habilidades" className="section stack-sec">
+      <Heading className="h-xl">{ui.stack}</Heading>
       <dl className="stack">
         {stack.map(g => (
           <div key={g.group.es}>
-            <dt>{tr(g.group)}</dt>
+            <dt className="label">{tr(g.group)}</dt>
             <dd>
               <ul className="chips">
                 {g.items.map(i => (
-                  <li key={i.name}>{i.icon && <img src={i.icon} alt="" width="20" height="20" loading="lazy" className={i.invert ? 'invert' : ''} />}<Scramble text={i.name} /></li>
+                  <li key={i.name}>{i.icon && <img src={i.icon} alt="" width="28" height="28" loading="lazy" className={i.invert ? 'invert' : ''} />}<Scramble text={i.name} /></li>
                 ))}
               </ul>
             </dd>
@@ -292,22 +295,43 @@ const ContactForm = () => {
 
 const Contact = () => {
   const { tr } = usePrefs();
+  const mail = socials.find(x => x.key === 'email');
   return (
-    <section id="contacto" className="section rail">
-      <Heading>{ui.contact}</Heading>
-      <div className="contact">
-        <div className="contact-grid">
-          {socials.map(s => (
-            <a key={s.key} href={s.href} target={s.key === 'email' ? undefined : '_blank'} rel="noopener noreferrer" className="contact-card" aria-label={s.label}>
-              <div className="icon"><Icon name={s.key} size={44} mono={s.key === 'github'} /></div>
-              <Scramble as="h3" text={s.label} />
-              <p>{tr(ui.contactCopy[s.key])}</p>
-            </a>
+    <section id="contacto" className="section contact-sec">
+      <Heading className="h-xl">{ui.contact}</Heading>
+      <p className="label mail-label">{tr(ui.mailLabel)}</p>
+      <Scramble as="a" href={mail.href} className="mail" text={ui.contactCopy.email.es} />
+      <div className="contact-body">
+        <ul className="socials">
+          {socials.filter(x => x.key !== 'email').map(x => (
+            <li key={x.key}>
+              <a href={x.href} target="_blank" rel="noopener noreferrer" className="social-row" aria-label={x.label}>
+                <Icon name={x.key} size={34} mono />
+                <Scramble as="h3" text={x.label} />
+                <span className="label">{tr(ui.contactCopy[x.key])}</span>
+              </a>
+            </li>
           ))}
-        </div>
+        </ul>
         {FORM_KEY && <ContactForm />}
       </div>
     </section>
+  );
+};
+
+// Raíl de progreso: el punto ámbar baja con el scroll y cada tick está donde empieza su sección.
+// En móvil pasa a ser una línea fina bajo la barra (ver .spine en style.css).
+const Spine = () => {
+  const { tr } = usePrefs();
+  return (
+    <nav className="spine" aria-label={tr(ui.spine)}>
+      <div className="spine-track">
+        {[{ id: 'inicio', label: ui.home }, ...links].map(l => (
+          <a key={l.id} href={`#${l.id}`}><span className="label">{tr(l.label)}</span></a>
+        ))}
+        <i className="spine-dot" aria-hidden="true" />
+      </div>
+    </nav>
   );
 };
 
@@ -320,42 +344,14 @@ function Page() {
     document.querySelector('meta[name="description"]')?.setAttribute('content', tr(ui.description));
   }, [lang]);
 
-  useEffect(() => {
-    // Proyectos en cascada: cada tarjeta se pega un poco más abajo que la anterior (si es más alta que la
-    // pantalla, más arriba para verla entera) y la tapada se encoge y oscurece según avanza la siguiente.
-    const cards = [...document.querySelectorAll('.project-card')];
-    const tops = [];
-    const layout = () => {
-      const base = innerWidth <= 860 ? 76 : 88;
-      cards.forEach((c, i) => { tops[i] = Math.min(base + i * 14, innerHeight - c.offsetHeight - 12); c.style.setProperty('--top', tops[i] + 'px'); });
-    };
-    const stack = () => {
-      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      cards.forEach((c, i) => {
-        if (!cards[i + 1]) return;
-        const p = Math.min(1, Math.max(0, 1 - (cards[i + 1].getBoundingClientRect().top - tops[i + 1]) / c.offsetHeight));
-        c.style.scale = 1 - p * 0.05;
-        c.style.filter = p ? `brightness(${1 - p * 0.4})` : '';
-      });
-    };
-    const relayout = () => { layout(); stack(); };
-    // La altura de las tarjetas cambia con el idioma, las fuentes o el ancho: recalcula en cada caso
-    const ro = new ResizeObserver(relayout);
-    cards.forEach(c => ro.observe(c));
-    addEventListener('scroll', stack, { passive: true });
-    addEventListener('resize', relayout);
-    relayout();
-    return () => {
-      removeEventListener('scroll', stack); removeEventListener('resize', relayout);
-      ro.disconnect();
-    };
-  }, []);
+  useEffect(() => startDriver(), []);
 
   return (
     <>
       <Boot />
       <a href="#main" className="skip-link">{tr(ui.skip)}</a>
       <Nav />
+      <Spine />
       <main id="main">
         <Hero />
         <About />
@@ -364,7 +360,13 @@ function Page() {
         <Stack />
         <Contact />
       </main>
-      <footer><Mark size={28} /><p>&copy; {new Date().getFullYear()} Piero Funes, pierooof.dev</p></footer>
+      <footer>
+        <div className="foot-logo"><Logo height={120} /></div>
+        <p className="label">&copy; {new Date().getFullYear()} Piero Funes</p>
+      </footer>
+      <button type="button" className="to-top" aria-label={tr(ui.top)} onClick={() => scrollTo({ top: 0 })}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" /></svg>
+      </button>
       {typeof window !== 'undefined' && <Telemetry />}
     </>
   );

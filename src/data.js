@@ -34,7 +34,7 @@ export const marquee = ['Python', 'Flask', 'React', 'TypeScript', 'Node.js', 'My
 
 export const experience = [
   {
-    time: '03/2026 – 06/2026',
+    time: '03/2026 → 06/2026',
     title: { es: 'Desarrollador Web (prácticas)', en: 'Web Developer (internship)' },
     org: 'Corner Estudios',
     text: {
@@ -43,7 +43,7 @@ export const experience = [
     },
   },
   {
-    time: '01/2023 – 04/2023',
+    time: '01/2023 → 04/2023',
     title: { es: 'Soporte técnico y atención al cliente', en: 'Technical support & customer service' },
     org: 'Servicios Industriales KIP E.I.R.L.',
     text: {
@@ -54,8 +54,8 @@ export const experience = [
 ];
 
 export const education = [
-  { time: { es: '09/2025 – 06/2027 (previsto)', en: '09/2025 – 06/2027 (expected)' }, title: { es: 'CFGS Desarrollo de Aplicaciones Web', en: 'Higher Vocational Degree in Web Application Development (DAW)' }, org: 'CEAC FP' },
-  { time: '2023 – 2024', title: { es: 'Psicología', en: 'Psychology' }, org: 'Universidad de Lima' },
+  { time: { es: '09/2025 → 06/2027 (previsto)', en: '09/2025 → 06/2027 (expected)' }, title: { es: 'CFGS Desarrollo de Aplicaciones Web', en: 'Higher Vocational Degree in Web Application Development (DAW)' }, org: 'CEAC FP' },
+  { time: '2023 → 2024', title: { es: 'Psicología', en: 'Psychology' }, org: 'Universidad de Lima' },
 ];
 
 // Captura: archivo en img/projects/ (sin extensión) + texto alternativo bilingüe
@@ -63,7 +63,7 @@ const s = (f, es, en) => ({ src: `projects/${f}.webp`, alt: { es, en } });
 
 export const projects = [
   {
-    title: 'Resilio', pill: { es: 'En producción', en: 'In production' },
+    title: 'Resilio', accent: '#3fb6a8',
     text: {
       es: 'Plataforma para detectar el síndrome de burnout digitalizando el test BAT-12, con métricas, gráficos de resultados y consejos generados con IA.',
       en: 'Platform that detects burnout by digitising the BAT-12 test, with metrics, result charts and AI-generated advice.',
@@ -86,7 +86,7 @@ export const projects = [
     demo: 'https://resilio.pierooof.dev/', code: 'https://github.com/pierooof/Resilio',
   },
   {
-    title: 'Respira', pill: { es: 'En producción', en: 'In production' },
+    title: 'Respira', accent: '#6fb7e6',
     text: {
       es: 'Calidad del aire y polen por barrio de Valencia: mapa de los 19 distritos coloreado por el índice europeo EAQI, ficha con previsión, histórico y avisos por Telegram.',
       en: 'Air quality and pollen by neighbourhood in Valencia: a map of the 19 districts coloured by the European EAQI index, with forecast, history and Telegram alerts.',
@@ -106,7 +106,7 @@ export const projects = [
     demo: 'https://respira.pierooof.dev/', code: 'https://github.com/pierooof/Respira',
   },
   {
-    title: 'CaféPunto', pill: { es: 'En producción · Docker', en: 'In production · Docker' },
+    title: 'CaféPunto', accent: '#d49a63',
     text: {
       es: 'Tarjeta de fidelización digital para cafeterías: el cliente enseña su QR, el barista suma sellos desde el móvil y al llegar a 10 la bebida es gratis.',
       en: 'Digital loyalty card for coffee shops: the customer shows a QR, the barista adds stamps from their phone, and the 10th drink is free.',
@@ -135,7 +135,7 @@ export const projects = [
     demo: 'https://cafe.pierooof.dev/', code: 'https://github.com/pierooof/CafePunto',
   },
   {
-    title: 'RetroPlay', pill: 'E-commerce',
+    title: 'RetroPlay', accent: '#b58cf2',
     text: {
       es: 'Alquiler de consolas y videojuegos retro: catálogo filtrable, carrito, pedidos y gestión de stock en tiempo real.',
       en: 'Retro console and video game rentals: filterable catalogue, cart, orders and real-time stock management.',
@@ -171,7 +171,7 @@ export const ui = {
   themeToDark: { es: 'Cambiar a modo oscuro', en: 'Switch to dark mode' },
   langSwitch: { es: 'Cambiar idioma a inglés', en: 'Switch language to Spanish' },
   badge: { es: 'Disponible para nuevas oportunidades', en: 'Open to new opportunities' },
-  h1: { es: 'Del diseño al deploy.', en: 'From design to deploy.' },
+  h1: { es: 'Del diseño / al deploy', en: 'From design / to deploy' },  // la barra separa las dos líneas; el punto ámbar lo pone el diseño
   lead: {
     es: 'Creo herramientas y MVPs con Python y Flask, y vengo de prácticas con React, TypeScript y Node.js. Mi base en Psicología me ayuda a entender a los usuarios y convertir necesidades reales en soluciones prácticas.',
     en: 'I build tools and MVPs with Python and Flask, and I come from an internship with React, TypeScript and Node.js. My background in Psychology helps me understand users and turn real needs into practical solutions.',
@@ -179,6 +179,9 @@ export const ui = {
   ctaProjects: { es: 'Ver proyectos', en: 'View projects' },
   heroShots: { es: 'Demos en producción', en: 'Live demos' },
   about: { es: 'Sobre mí', en: 'About me' },
+  spine: { es: 'Progreso de la página', en: 'Page progress' },
+  mailLabel: { es: 'Escríbeme', en: 'Write to me' },
+  top: { es: 'Volver al inicio', en: 'Back to top' },
   aboutWhoami: {
     es: 'Estudiante de Desarrollo de Aplicaciones Web enfocado en crear herramientas y MVPs de forma ágil con Python y Flask.',
     en: 'Web Application Development student focused on quickly building tools and MVPs with Python and Flask.',

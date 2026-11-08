@@ -1,7 +1,7 @@
 /* =====================================================================
    base.css: tokens, reset, tipografía y componentes genéricos (marca pierooof.dev)
-   Identidad: verde pino + menta de la marca; el ámbar se reserva para "vivo / disponible"
-   (es el punto del logo). Titulares en Young Serif, texto en Hanken Grotesk.
+   Verde pino + menta de la marca; el ámbar (--live) es solo "en vivo": el punto de .dev.
+   Titulares en Bricolage Grotesque, texto en Hanken Grotesk, etiquetas en JetBrains Mono.
    Pon data-theme="light" | "dark" en <html> (por defecto, oscuro).
    ===================================================================== */
 
@@ -9,49 +9,48 @@
 :root,
 :root[data-theme="dark"] {
     color-scheme: dark;
-    --bg: #0e1a16;
-    --surface: #14231e;
-    --border: #28403a;
-    --text: #e8f0ec;
-    --muted: #9db3aa;
+    --bg: #08110e;
+    --surface: #101b17;
+    --border: #20302a;
+    --text: #edf3ef;
+    --muted: #8fa59b;
     --primary: #5cb79a;      /* enlaces y acentos de texto */
-    --amber: #f0b44c;        /* solo: disponible / en producción */
+    --live: #f0b44c;         /* solo: en vivo / disponible / el punto de .dev */
     --brand: #5cb79a;        /* fondo de botones */
-    --on-brand: #0e1a16;     /* texto sobre --brand */
-    --nav-bg: rgba(14, 26, 22, .88);
-    --pill-bg: rgba(14, 26, 22, .82);
-    --shadow: 0 18px 40px -16px rgba(0, 0, 0, .65);
+    --on-brand: #08110e;     /* texto sobre --brand */
+    --nav-bg: rgba(8, 17, 14, .82);
+    --shadow: 0 30px 60px -28px rgba(0, 0, 0, .8);
     --icon-filter: brightness(0) invert(1);   /* iconos oscuros sobre fondo oscuro */
 }
 
 :root[data-theme="light"] {
     color-scheme: light;
-    --bg: #f1f8f5;
-    --surface: #fff;
-    --border: #c3dbd1;
-    --text: #12332b;
-    --muted: #4a675e;
-    --primary: #2b7a62;
-    --amber: #d9941a;
+    --bg: #e2e9df;
+    --surface: #f6f8f3;
+    --border: #b4c4b9;
+    --text: #0b2019;
+    --muted: #4b625a;
+    --primary: #1f6f58;
+    --live: #c98510;
     --brand: #5cb79a;
-    --on-brand: #0e2420;
-    --nav-bg: rgba(241, 248, 245, .9);
-    --pill-bg: rgba(255, 255, 255, .9);
-    --shadow: 0 18px 40px -16px rgba(18, 51, 43, .3);
+    --on-brand: #08201a;
+    --nav-bg: rgba(226, 233, 223, .86);
+    --shadow: 0 24px 50px -22px rgba(11, 32, 25, .5);
     --icon-filter: none;
 }
 
 /* ---------- 2. TOKENS: ESCALAS (iguales en todos los temas) ---------- */
 :root {
-    --font-display: 'Young Serif', Georgia, serif;
-    --font-mono: ui-monospace, 'JetBrains Mono', SFMono-Regular, Menlo, Consolas, monospace;   /* solo carga y telemetría */
+    --font-display: 'Bricolage Grotesque Variable', 'Bricolage Grotesque', 'Hanken Grotesk Variable', system-ui, sans-serif;
     --font-sans: 'Hanken Grotesk Variable', 'Hanken Grotesk', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     --lh-body: 1.6;
     --fs-xs: .8rem;
     --fs-sm: .9rem;
     --fs-md: 1rem;
     --fs-lg: 1.2rem;
-    --fs-h2: clamp(1.6rem, 2.6vw, 2rem);
+    --fs-label: .75rem;                      /* etiquetas mono en mayúsculas */
+    --fs-xl: clamp(2.9rem, 9.4vw, 9.5rem);   /* titulares de sección y héroe */
 
     --space-1: .25rem;
     --space-2: .5rem;
@@ -59,24 +58,25 @@
     --space-4: 1.5rem;
     --space-5: 2rem;
     --space-6: 3rem;
-    --space-7: 5rem;
+    --space-7: clamp(4rem, 9vw, 8rem);
 
-    /* Jerarquía de radios: tarjeta > imagen y controles */
-    --radius-sm: 6px;
-    --radius-lg: 12px;
+    /* Jerarquía de radios: tarjeta > imagen > controles (píldora) */
+    --radius-card: 20px;
+    --radius-img: 10px;
     --radius-pill: 999px;
 
+    --ease: cubic-bezier(.2, .7, .2, 1);
     --dur-fast: .2s;
-    --dur: .3s;
-    --dur-med: .4s;
+    --dur: .35s;
+    --dur-med: .5s;
 
     --z-overlay: 900;
     --z-nav: 1000;
     --z-top: 3000;
     --z-boot: 5000;
 
-    --container: 1200px;
-    --pad-x: max(5%, calc((100% - var(--container)) / 2));
+    --container: 1240px;
+    --pad-x: max(clamp(1.25rem, 5vw, 4.5rem), calc((100% - var(--container)) / 2));
     --scroll-offset: 80px;   /* alto de la barra fija, para los anclas */
 }
 
@@ -98,29 +98,27 @@ body {
 }
 
 section[id], header[id] { scroll-margin-top: var(--scroll-offset); }
+::selection { background: var(--live); color: #08110e; }
 
 /* ---------- 4. TIPOGRAFÍA ---------- */
-h1, h2, h3 { font-family: var(--font-display); font-weight: 400; line-height: 1.1; }
-h2 { font-size: var(--fs-h2); }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 650; line-height: 1; letter-spacing: -.03em; }
+.label { font-family: var(--font-mono); font-size: var(--fs-label); font-weight: 500; letter-spacing: .08em; text-transform: uppercase; }
 
 /* Enlace subrayado (texto corrido y acciones) */
-.text-link, .link-main, .link-alt { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .25em; }
+.text-link, .link-main, .link-alt { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .3em; }
 .text-link:hover, .link-main:hover, .link-alt:hover { text-decoration-thickness: 2px; }
 
 /* ---------- 5. LAYOUT ---------- */
 .section { padding: var(--space-7) var(--pad-x); border-top: 1px solid var(--border); }
-/* Título a la izquierda, contenido a la derecha */
-.rail { display: grid; grid-template-columns: 11rem minmax(0, 1fr); column-gap: var(--space-6); align-items: start; }
-.rail > h2 { padding-top: .15rem; }
-@media (max-width: 860px) {
-    .section { padding-block: var(--space-6); }
-    .rail { grid-template-columns: minmax(0, 1fr); }
-    .rail > h2 { margin-bottom: var(--space-4); }
-}
+@media (max-width: 860px) { .section { padding-block: var(--space-6) var(--space-7); } }
 
 /* ---------- 6. COMPONENTES ---------- */
-.btn-primary { display: inline-block; padding: .8rem 1.4rem; border: 0; background: var(--brand); color: var(--on-brand); text-decoration: none; border-radius: var(--radius-sm); font-weight: 700; font-size: var(--fs-md); cursor: pointer; transition: filter var(--dur-fast); }
-.btn-primary:hover { filter: brightness(1.1); }
+/* Botón: al pasar el cursor, el ámbar "se pone en vivo" y barre el botón de izquierda a derecha */
+.btn-primary { position: relative; isolation: isolate; overflow: hidden; display: inline-block; padding: .85rem 1.6rem; border: 0; background: var(--brand); color: var(--on-brand); text-decoration: none; border-radius: var(--radius-pill); font-weight: 700; font-size: var(--fs-md); cursor: pointer; }
+.btn-primary::before { content: ""; position: absolute; inset: -1px; z-index: -1; background: var(--live); clip-path: inset(0 100% 0 0); transition: clip-path var(--dur) var(--ease); }
+.btn-primary:hover::before, .btn-primary:focus-visible::before { clip-path: inset(0); }
+.btn-primary:hover, .btn-primary:focus-visible { background-color: var(--live); transition: background-color 0s var(--dur); }
+.btn-primary:active { scale: .97; }
 
 /* Accesibilidad: saltar al contenido */
 .skip-link { position: absolute; left: -999px; top: 0; background: var(--brand); color: var(--on-brand); padding: var(--space-2) var(--space-3); z-index: var(--z-top); }
@@ -129,8 +127,11 @@ h2 { font-size: var(--fs-h2); }
 /* ---------- 7. MOVIMIENTO ---------- */
 @keyframes scroll { to { transform: translateX(-50%); } }
 @keyframes blink { 50% { opacity: 0; } }
-@keyframes fill { to { width: 100%; } }
-@keyframes rise { from { opacity: 0; transform: translateY(28px); } }
+@keyframes ping { from { opacity: .9; scale: 1; } to { opacity: 0; scale: 3.2; } }
+@keyframes rise { from { opacity: 0; transform: translateY(32px); } }
+@keyframes line-in { from { transform: translateY(105%); } }
+@keyframes land { from { translate: 0 -1.4em; opacity: 0; } 55% { translate: 0 0; opacity: 1; scale: 1.3 .7; } 75% { scale: .94 1.08; } to { scale: 1; } }
+@keyframes float { 50% { translate: 0 -5px; } }
 
 @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
